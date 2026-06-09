@@ -5,87 +5,97 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>承銷風險評估報告 — 百達-KY CB & SGBR2X權證</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
 :root{
-  --bg:#0b0d11;--s1:#12151d;--s2:#1a1e28;--s3:#222636;
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
-  --text:#dde1ec;--muted:#6b7a99;
-  --blue:#4f8ef7;--blue-d:rgba(79,142,247,.12);
+  --bg:#080a0f;--s1:#0f1219;--s2:#161b26;--s3:#1e2333;--s4:#252c3f;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.11);--border3:rgba(255,255,255,.18);
+  --text:#dde1ec;--muted:#6b7a99;--dim:#4a5568;
+  --blue:#4f8ef7;--blue-d:rgba(79,142,247,.1);--blue-g:rgba(79,142,247,.04);
   --red:#ff4b4b;--red-d:rgba(255,75,75,.1);
   --gold:#f5c842;--gold-d:rgba(245,200,66,.1);
   --green:#2dd4a0;--green-d:rgba(45,212,160,.1);
+  --purple:#a78bfa;--purple-d:rgba(167,139,250,.1);
   --mono:'IBM Plex Mono',monospace;
   --serif:'Playfair Display',serif;
   --sans:'Inter',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.7;overflow-x:hidden;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.75;overflow-x:hidden;}
 
 /* ── NAV ── */
-.nav{display:flex;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(11,13,17,.95);z-index:100;backdrop-filter:blur(12px);}
-.nav-tab{padding:15px 28px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);transition:.2s;white-space:nowrap;}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--blue);}
-.nav-tab.active.t0{border-bottom-color:var(--gold);}
-.nav-tab.active.t1{border-bottom-color:var(--red);}
-.nav-tab.active.t2{border-bottom-color:var(--blue);}
-.nbadge{display:inline-block;font-size:10px;font-family:var(--mono);padding:1px 7px;border-radius:2px;margin-left:7px;vertical-align:middle;}
+.nav{display:flex;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;
+  background:rgba(8,10,15,.92);backdrop-filter:blur(20px);}
+.nav-inner{display:flex;width:100%;max-width:1140px;margin:0 auto;padding:0 44px;}
+.nav-tab{padding:16px 24px;font-size:13px;font-weight:500;cursor:pointer;
+  border-bottom:2px solid transparent;color:var(--muted);transition:.2s;white-space:nowrap;letter-spacing:.01em;}
+.nav-tab:hover{color:var(--text);}
+.nav-tab.active{color:var(--text);}
+.nav-tab.t0.active{border-bottom-color:var(--gold);}
+.nav-tab.t1.active{border-bottom-color:var(--red);}
+.nav-tab.t2.active{border-bottom-color:var(--blue);}
+.nbadge{display:inline-block;font-size:9px;font-family:var(--mono);padding:1px 6px;
+  border-radius:2px;margin-left:6px;vertical-align:middle;letter-spacing:.06em;}
 .nb0{background:var(--gold-d);color:var(--gold);}
 .nb1{background:var(--red-d);color:var(--red);}
 .nb2{background:var(--blue-d);color:var(--blue);}
 
 /* ── PAGE ── */
-.page{display:none;padding:48px 52px;max-width:1100px;margin:0 auto;animation:fadeIn .3s ease;}
+.page{display:none;padding:52px 44px;max-width:1140px;margin:0 auto;animation:fadeUp .35s ease;}
 .page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 
 /* ── PAGE HEADER ── */
-.ph{margin-bottom:44px;}
-.ph-eyebrow{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.ph-dot{width:6px;height:6px;border-radius:50%;display:inline-block;}
-.ph-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);font-weight:700;line-height:1.1;margin-bottom:10px;}
-.ph-sub{font-size:13px;color:var(--muted);}
+.ph{margin-bottom:48px;}
+.ph-eyebrow{font-size:11px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.ph-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ph-title{font-family:var(--serif);font-size:clamp(28px,4vw,46px);font-weight:700;
+  line-height:1.08;margin-bottom:12px;letter-spacing:-.01em;}
+.ph-sub{font-size:13px;color:var(--muted);line-height:1.6;}
 
-/* ── SECTION ── */
-.sec{margin-bottom:44px;}
-.sec-head{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-family:var(--mono);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:20px;}
+/* ── SEC ── */
+.sec{margin-bottom:48px;}
+.sec-head{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);
+  font-family:var(--mono);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:22px;}
 
-/* ── GRIDS ── */
+/* ── GRID ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 
 /* ── CARD ── */
 .card{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:22px;}
-.card-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--mono);margin-bottom:14px;}
+.card-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  font-family:var(--mono);margin-bottom:14px;}
 
 /* ── KPI ── */
-.kpi-val{font-family:var(--mono);font-size:38px;font-weight:600;line-height:1;margin-bottom:4px;}
+.kpi-val{font-family:var(--mono);font-size:36px;font-weight:600;line-height:1;margin-bottom:4px;}
 .kpi-sub{font-size:12px;color:var(--muted);}
 
-/* ── VERDICT ── */
+/* ── VERDICT BANNER ── */
 .verdict{border-radius:10px;padding:22px 26px;margin-bottom:28px;display:flex;gap:20px;align-items:center;}
-.v-gold{background:var(--gold-d);border:1px solid rgba(245,200,66,.25);}
-.v-red{background:var(--red-d);border:1px solid rgba(255,75,75,.2);}
+.v-gold{background:var(--gold-d);border:1px solid rgba(245,200,66,.22);}
 .v-blue{background:var(--blue-d);border:1px solid rgba(79,142,247,.2);}
-.v-green{background:var(--green-d);border:1px solid rgba(45,212,160,.2);}
-.vstamp{flex-shrink:0;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 16px;border-radius:5px;border:2px solid currentColor;letter-spacing:.06em;text-transform:uppercase;transform:rotate(-1.5deg);}
+.vstamp{flex-shrink:0;font-family:var(--mono);font-size:11px;font-weight:600;
+  padding:8px 16px;border-radius:5px;border:2px solid currentColor;
+  letter-spacing:.06em;text-transform:uppercase;transform:rotate(-1.5deg);}
 .vstamp-gold{color:var(--gold);}
-.vstamp-red{color:var(--red);}
 .vstamp-blue{color:var(--blue);}
-.vstamp-green{color:var(--green);}
-.vtext{font-size:14px;font-weight:500;}
-.vsub{font-size:12px;color:var(--muted);margin-top:4px;}
+.vtext{font-size:14px;font-weight:500;line-height:1.5;}
+.vsub{font-size:12px;color:var(--muted);margin-top:5px;}
 
 /* ── TABLE ── */
 .tbl{width:100%;border-collapse:collapse;font-size:13px;}
-.tbl th{padding:9px 12px;font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border2);font-weight:400;text-align:left;}
+.tbl th{padding:9px 12px;font-size:10px;font-family:var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border2);font-weight:400;text-align:left;}
 .tbl td{padding:10px 12px;border-bottom:1px solid var(--border);}
 .tbl tr:last-child td{border-bottom:none;}
 .tbl .r{text-align:right;}
 .tbl .mono{font-family:var(--mono);font-size:12px;}
 
-/* ── RISK BADGES ── */
+/* ── RISK BADGE ── */
 .rb{display:inline-block;font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:2px;letter-spacing:.04em;}
 .rb-high{background:var(--red-d);color:var(--red);}
 .rb-mid{background:var(--gold-d);color:var(--gold);}
@@ -93,10 +103,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 
 /* ── REASON LIST ── */
 .rlist{border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:28px;}
-.ritem{padding:20px 24px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:40px 1fr;gap:14px;transition:background .2s;}
+.ritem{padding:20px 24px;border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:36px 1fr;gap:14px;transition:background .2s;}
 .ritem:last-child{border-bottom:none;}
-.ritem:hover{background:rgba(255,255,255,.02);}
-.rnum{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--s3);width:28px;height:28px;border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.ritem:hover{background:rgba(255,255,255,.015);}
+.rnum{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--s3);
+  width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;}
 .rhead{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .rdesc{font-size:13px;color:var(--muted);line-height:1.7;}
 .rdesc strong{color:var(--text);}
@@ -106,14 +118,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .rtag-g{background:var(--green-d);color:var(--green);}
 
 /* ── FORMULA ── */
-.formula{background:#080b10;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:14px 18px;font-family:var(--mono);font-size:12px;line-height:2.2;margin:12px 0;overflow-x:auto;}
+.formula{background:#060810;border:1px solid var(--border);border-left:3px solid var(--gold);
+  border-radius:0 6px 6px 0;padding:14px 18px;font-family:var(--mono);
+  font-size:12px;line-height:2.2;margin:12px 0;overflow-x:auto;}
 .hl{color:var(--gold);font-weight:600;}
 .hl2{color:var(--blue);}
 
 /* ── STEP ── */
 .step{margin-bottom:10px;}
 .step-label{font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:3px;}
-.step-val{background:#080b10;border:1px solid var(--border);padding:7px 12px;font-family:var(--mono);font-size:13px;border-radius:4px;}
+.step-val{background:#060810;border:1px solid var(--border);padding:7px 12px;
+  font-family:var(--mono);font-size:13px;border-radius:4px;}
 .res{color:var(--gold);font-weight:600;}
 .resb{color:var(--blue);font-weight:600;}
 
@@ -121,18 +136,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .chart-wrap{position:relative;height:200px;}
 
 /* ── FINDING ── */
-.finding{border-radius:8px;padding:18px 22px;margin-bottom:20px;}
-.fw{background:var(--red-d);border:1px solid rgba(255,75,75,.2);}
-.fo{background:var(--green-d);border:1px solid rgba(45,212,160,.2);}
-.fn{background:var(--gold-d);border:1px solid rgba(245,200,66,.2);}
+.finding{border-radius:8px;padding:18px 22px;margin-bottom:16px;}
+.fw{background:var(--red-d);border:1px solid rgba(255,75,75,.18);}
+.fo{background:var(--green-d);border:1px solid rgba(45,212,160,.18);}
+.fn{background:var(--gold-d);border:1px solid rgba(245,200,66,.18);}
+.fp{background:var(--purple-d);border:1px solid rgba(167,139,250,.2);}
 .finding-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
 .finding-body{font-size:14px;line-height:1.7;}
 .finding-body strong{color:var(--text);}
 
 /* ── METER ── */
 .meter-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;font-family:var(--mono);}
-.meter-bar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;margin-bottom:14px;}
-.meter-fill{height:100%;border-radius:3px;}
+.meter-bar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin-bottom:14px;}
+.meter-fill{height:100%;border-radius:3px;transition:width .6s ease;}
 
 /* ── COMPARE ROW ── */
 .cmp{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
@@ -140,248 +156,235 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 .cmp-l{color:var(--muted);font-size:13px;}
 .cmp-r{display:flex;gap:20px;font-family:var(--mono);font-size:13px;font-weight:600;}
 
-/* ═══════════════════════════════════
-   PAGE 0: SUMMARY — SPECIAL STYLES
-═══════════════════════════════════ */
+/* ════ PAGE 0 SPECIAL ════ */
 .summary-hero{
-  background:linear-gradient(135deg,rgba(245,200,66,.06) 0%,rgba(79,142,247,.06) 100%);
+  background:linear-gradient(135deg,rgba(245,200,66,.05) 0%,rgba(79,142,247,.05) 100%);
   border:1px solid var(--border2);border-radius:14px;
-  padding:44px 48px;margin-bottom:48px;position:relative;overflow:hidden;
+  padding:48px 52px;margin-bottom:52px;position:relative;overflow:hidden;
 }
-.summary-hero::before{
-  content:'';position:absolute;top:-80px;right:-80px;
-  width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(245,200,66,.08),transparent 70%);
-  pointer-events:none;
+.summary-hero::after{
+  content:'';position:absolute;top:-100px;right:-100px;
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,200,66,.06),transparent 70%);pointer-events:none;
 }
-.sh-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
-.sh-title{font-family:var(--serif);font-size:clamp(30px,4vw,48px);font-weight:700;line-height:1.1;margin-bottom:14px;}
-.sh-desc{font-size:14px;color:var(--muted);max-width:560px;line-height:1.7;}
+.sh-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+.sh-title{font-family:var(--serif);font-size:clamp(32px,5vw,56px);font-weight:700;line-height:1.05;margin-bottom:16px;letter-spacing:-.02em;}
+.sh-desc{font-size:14px;color:var(--muted);max-width:540px;line-height:1.75;}
 
-.verdict-card{
-  background:var(--s1);border:1px solid var(--border2);border-radius:10px;
-  padding:28px;position:relative;overflow:hidden;
-}
-.vc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;}
-.vc-num{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
-.vc-stamp{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 12px;border-radius:4px;border:2px solid currentColor;letter-spacing:.06em;transform:rotate(-1deg);display:inline-block;}
-.vc-company{font-size:18px;font-weight:600;margin-bottom:6px;}
-.vc-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
-.vc-points{display:flex;flex-direction:column;gap:10px;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:22px;}
+.kpi-cell{padding:20px 22px;border-right:1px solid var(--border);}
+.kpi-cell:last-child{border-right:none;}
+.kpi-cell label{display:block;font-size:10px;font-family:var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.kbc-val{font-family:var(--mono);font-size:24px;font-weight:600;}
+
+.verdict-card{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:28px;}
+.vc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+.vc-num{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.vc-stamp{font-family:var(--mono);font-size:10px;font-weight:600;padding:5px 12px;
+  border-radius:4px;border:2px solid currentColor;letter-spacing:.06em;transform:rotate(-1.2deg);display:inline-block;}
+.vc-company{font-size:18px;font-weight:600;margin-bottom:5px;}
+.vc-sub{font-size:12px;color:var(--muted);margin-bottom:18px;}
+.vc-points{display:flex;flex-direction:column;gap:11px;}
 .vc-point{display:flex;gap:10px;align-items:flex-start;}
-.vc-point-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;}
-.vpi-red{background:var(--red-d);color:var(--red);}
-.vpi-gold{background:var(--gold-d);color:var(--gold);}
-.vpi-green{background:var(--green-d);color:var(--green);}
-.vpi-blue{background:var(--blue-d);color:var(--blue);}
-.vc-point-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.vc-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;}
+.vi-r{background:var(--red-d);color:var(--red);}
+.vi-g{background:var(--gold-d);color:var(--gold);}
+.vi-b{background:var(--blue-d);color:var(--blue);}
+.vc-point-text{font-size:13px;color:var(--muted);line-height:1.65;}
 .vc-point-text strong{color:var(--text);}
 
-.kpi-bar{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  border:1px solid var(--border2);border-radius:10px;overflow:hidden;margin-bottom:20px;
+.cmp-table{width:100%;border-collapse:collapse;}
+.cmp-table th{padding:10px 14px;font-size:10px;font-family:var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border2);font-weight:400;text-align:left;}
+.cmp-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
+.cmp-table tr:last-child td{border-bottom:none;}
+
+/* ════ RISK COMPOUNDING ════ */
+.risk-chain{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.rc-block{flex:1;padding:20px 18px;border-right:1px solid var(--border);position:relative;}
+.rc-block:last-child{border-right:none;background:rgba(255,75,75,.04);}
+.rc-num{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px;}
+.rc-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.rc-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--red);margin-bottom:8px;}
+.rc-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.rc-arrow{position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  width:24px;height:24px;background:var(--s3);border:1px solid var(--border2);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--muted);z-index:1;}
+
+/* ════ LEGAL RISK BOX ════ */
+.legal-box{
+  background:linear-gradient(135deg,rgba(255,75,75,.06),rgba(255,75,75,.03));
+  border:1px solid rgba(255,75,75,.2);border-left:4px solid var(--red);
+  border-radius:0 10px 10px 0;padding:22px 26px;margin-bottom:28px;
 }
-.kpi-bar-cell{padding:18px 20px;border-right:1px solid var(--border);}
-.kpi-bar-cell:last-child{border-right:none;}
-.kpi-bar-cell label{display:block;font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.kbc-val{font-family:var(--mono);font-size:22px;font-weight:600;}
+.lb-title{font-size:13px;font-weight:600;color:var(--red);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;}
+.lb-body{font-size:14px;line-height:1.8;color:var(--muted);}
+.lb-body strong{color:var(--text);}
 
-.compare-section{margin-bottom:44px;}
-.compare-table{width:100%;border-collapse:collapse;}
-.compare-table th{padding:10px 16px;font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border2);font-weight:400;text-align:left;}
-.compare-table td{padding:13px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
-.compare-table tr:last-child td{border-bottom:none;}
+/* ════ INTERACTIVE CALC ════ */
+.calc-hero{
+  background:linear-gradient(135deg,rgba(79,142,247,.06),rgba(79,142,247,.02));
+  border:1px solid rgba(79,142,247,.2);border-radius:12px;
+  padding:28px 32px;margin-bottom:28px;
+}
+.calc-hero-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+.calc-hero-sub{font-size:13px;color:var(--muted);}
 
-.interview-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:44px;}
-.icard{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:24px 26px;}
-.icard-num{font-family:var(--mono);font-size:28px;font-weight:600;margin-bottom:10px;opacity:.2;}
-.icard-title{font-size:14px;font-weight:600;margin-bottom:8px;}
-.icard-body{font-size:13px;color:var(--muted);line-height:1.7;}
+.calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+
+.slider-group{display:flex;flex-direction:column;gap:18px;}
+.slider-item{}
+.slider-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.slider-sym{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--gold);}
+.slider-name{font-size:12px;color:var(--muted);margin-left:8px;}
+.slider-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text);}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:4px;
+  background:var(--s3);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--blue);border:2px solid var(--bg);
+  box-shadow:0 0 0 3px rgba(79,142,247,.25);cursor:pointer;transition:.15s;
+}
+input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 5px rgba(79,142,247,.3);}
+.slider-range{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);font-family:var(--mono);margin-top:4px;}
+.slider-locked{background:var(--s2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;}
+.lock-label{font-size:12px;color:var(--muted);}
+.lock-val{font-family:var(--mono);font-size:14px;font-weight:600;}
+.lock-reason{font-size:10px;color:var(--dim);margin-top:2px;}
+
+.result-panel{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:24px;
+  display:flex;flex-direction:column;gap:0;}
+.rp-title{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+.rp-main{margin-bottom:24px;}
+.rp-label{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.rp-big{font-family:var(--mono);font-size:52px;font-weight:600;line-height:1;margin-bottom:4px;}
+.rp-change{font-family:var(--mono);font-size:13px;}
+.rp-divider{height:1px;background:var(--border);margin:20px 0;}
+.rp-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;}
+.rp-row-label{font-size:12px;color:var(--muted);}
+.rp-row-val{font-family:var(--mono);font-size:13px;font-weight:600;}
+.rp-chart-wrap{height:140px;position:relative;margin-top:20px;}
+
+.param-change-bar{height:3px;border-radius:2px;margin-top:8px;transition:width .3s;}
+
+/* ════ MODEL LIMIT ════ */
+.model-limit{
+  background:var(--s1);border:1px solid var(--border2);border-radius:10px;
+  padding:24px 28px;margin-bottom:28px;
+}
+.ml-title{font-size:14px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.ml-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ml-item{background:var(--s2);border-radius:8px;padding:16px 18px;}
+.ml-item-title{font-size:12px;font-weight:600;margin-bottom:6px;}
+.ml-item-body{font-size:12px;color:var(--muted);line-height:1.65;}
 
 /* ── FOOTER ── */
-.footer{border-top:1px solid var(--border);padding:18px 52px;font-size:11px;color:var(--muted);font-family:var(--mono);display:flex;justify-content:space-between;}
+.footer{border-top:1px solid var(--border);padding:20px 44px;
+  font-size:11px;color:var(--muted);font-family:var(--mono);
+  display:flex;justify-content:space-between;gap:16px;}
 
-@media(max-width:800px){
-  .g2,.g3,.g4,.kpi-bar,.interview-grid{grid-template-columns:1fr 1fr;}
+@media(max-width:860px){
+  .g2,.g3,.g4,.kpi-strip,.ml-grid{grid-template-columns:1fr 1fr;}
   .page{padding:28px 20px;}
-  .footer{flex-direction:column;gap:6px;padding:16px 20px;}
-  .verdict{flex-direction:column;align-items:flex-start;}
   .summary-hero{padding:28px 24px;}
+  .calc-layout{grid-template-columns:1fr;}
+  .risk-chain{flex-direction:column;}
+  .rc-arrow{display:none;}
+  .footer{flex-direction:column;padding:16px 20px;}
 }
 @media(max-width:520px){
-  .g2,.g3,.g4,.kpi-bar,.interview-grid{grid-template-columns:1fr;}
+  .g2,.g3,.g4,.kpi-strip,.ml-grid,.verdict-card .g2{grid-template-columns:1fr;}
+  .verdict{flex-direction:column;align-items:flex-start;}
+  .nav-inner{padding:0 8px;}
+  .nav-tab{padding:14px 14px;font-size:12px;}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
-  <div class="nav-tab t0 active" onclick="go(0)">結論摘要 <span class="nbadge nb0">NEW</span></div>
-  <div class="nav-tab t1" onclick="go(1)">案例一 <span class="nbadge nb1">CB承銷</span></div>
-  <div class="nav-tab t2" onclick="go(2)">案例二 <span class="nbadge nb2">權證定價</span></div>
+  <div class="nav-inner">
+    <div class="nav-tab t0 active" onclick="go(0)">結論摘要 <span class="nbadge nb0">Overview</span></div>
+    <div class="nav-tab t1" onclick="go(1)">案例一 <span class="nbadge nb1">CB承銷</span></div>
+    <div class="nav-tab t2" onclick="go(2)">案例二 <span class="nbadge nb2">權證定價</span></div>
+  </div>
 </nav>
 
-<!-- ════════════════════════════════
-     PAGE 0 : 結論摘要
-════════════════════════════════ -->
+<!-- ════ PAGE 0 結論摘要 ════ -->
 <div class="page active" id="p0">
-
-  <!-- Hero -->
   <div class="summary-hero">
-    <div class="sh-eyebrow">面試評估報告 ／ 評價基準日 2026.06.08</div>
+    <div class="sh-eyebrow">承銷案件暨衍生商品評估報告 ／ 評價基準日 2026.06.08</div>
     <h1 class="sh-title">兩案結論摘要</h1>
-    <p class="sh-desc">從承銷商與量化分析師的雙重視角，針對百達-KY可轉債風險及國泰權證理論定價進行系統性評估，呈現判斷依據與最終建議。</p>
+    <p class="sh-desc">以承銷商與量化分析師的雙重視角，針對百達-KY可轉債承銷風險及國泰認購權證理論定價進行系統性評估，呈現判斷邏輯與最終建議。</p>
   </div>
 
-  <!-- KPI總覽 -->
   <div class="sec">
     <div class="sec-head">核心數字一覽</div>
-    <div class="kpi-bar">
-      <div class="kpi-bar-cell">
-        <label>案一 整體風險</label>
-        <div class="kbc-val" style="color:var(--red)">中高風險</div>
-      </div>
-      <div class="kpi-bar-cell">
-        <label>溢價率上限</label>
-        <div class="kbc-val" style="color:var(--red)">110%</div>
-      </div>
-      <div class="kpi-bar-cell">
-        <label>案二 理論價格</label>
-        <div class="kbc-val" style="color:var(--gold)" id="s0-tp">—</div>
-      </div>
-      <div class="kpi-bar-cell">
-        <label>案二 Delta值</label>
-        <div class="kbc-val" style="color:var(--blue)" id="s0-delta">—</div>
-      </div>
+    <div class="kpi-strip">
+      <div class="kpi-cell"><label>案一整體風險</label><div class="kbc-val" style="color:var(--red)">中高風險</div></div>
+      <div class="kpi-cell"><label>CB溢價率上限</label><div class="kbc-val" style="color:var(--red)">110%</div></div>
+      <div class="kpi-cell"><label>案二理論價格</label><div class="kbc-val" style="color:var(--gold)" id="s0-tp">—</div></div>
+      <div class="kpi-cell"><label>案二Delta值</label><div class="kbc-val" style="color:var(--blue)" id="s0-delta">—</div></div>
     </div>
   </div>
 
-  <!-- 兩案並排結論 -->
   <div class="sec">
     <div class="sec-head">各案結論</div>
     <div class="g2">
-      <!-- Case 1 -->
       <div class="verdict-card">
         <div class="vc-top">
-          <div>
-            <div class="vc-num">Case 01 ／ CB承銷風險</div>
-          </div>
-          <div class="vc-stamp vstamp-gold">附條件承接</div>
+          <div class="vc-num">Case 01 ／ CB承銷風險評估</div>
+          <div class="vc-stamp" style="color:var(--gold)">附條件承接</div>
         </div>
         <div class="vc-company">百達-KY (2236)</div>
         <div class="vc-sub">5年期 4.5億元無擔保可轉換公司債</div>
         <div class="vc-points">
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-red">!</div>
-            <div class="vc-point-text"><strong>本業持續虧損</strong>—2024 EPS本業-1.01元，2025Q4淨利率-10.57%，五年後還款來源不確定</div>
-          </div>
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-red">!</div>
-            <div class="vc-point-text"><strong>溢價率110%嚴重偏高</strong>—轉換價估238元，現股價113.5元，轉換誘因幾乎為零</div>
-          </div>
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-gold">!</div>
-            <div class="vc-point-text"><strong>建議調整條件</strong>—降溢價至30-50%、加財務維持條款及回售條款後可重評</div>
-          </div>
+          <div class="vc-point"><div class="vc-icon vi-r">!</div><div class="vc-point-text"><strong>本業持續虧損</strong>—2024 EPS本業-1.01元，五年後還款來源不確定</div></div>
+          <div class="vc-point"><div class="vc-icon vi-r">!</div><div class="vc-point-text"><strong>溢價率110%嚴重偏高</strong>—轉換價≈238元，CB幾乎確定以純債到期</div></div>
+          <div class="vc-point"><div class="vc-icon vi-r">!</div><div class="vc-point-text"><strong>承銷商法律風險</strong>—110%溢價CB法人不碰，出事時投資人追訴對象是承銷商</div></div>
+          <div class="vc-point"><div class="vc-icon vi-g">→</div><div class="vc-point-text"><strong>建議</strong>—降溢價至30-50%、加財務維持條款及回售條款後可重評</div></div>
         </div>
       </div>
-      <!-- Case 2 -->
       <div class="verdict-card">
         <div class="vc-top">
-          <div>
-            <div class="vc-num">Case 02 ／ 權證定價</div>
-          </div>
-          <div class="vc-stamp vstamp-blue">定價完成</div>
+          <div class="vc-num">Case 02 ／ 權證理論定價</div>
+          <div class="vc-stamp" style="color:var(--blue)">定價完成</div>
         </div>
         <div class="vc-company">059427 SGBR2X國泰5A購01</div>
-        <div class="vc-sub">00715L 期街口布蘭特原油正2 ETF認購權證</div>
+        <div class="vc-sub">00715L 期街口布蘭特原油正2 ETF 認購權證</div>
         <div class="vc-points">
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-blue">✓</div>
-            <div class="vc-point-text"><strong>理論價 <span id="sp-tp2">—</span> 元</strong>—採BIV 275.7%，B-S歐式近似，與市場揭示值2.00元高度吻合</div>
-          </div>
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-blue">✓</div>
-            <div class="vc-point-text"><strong>Delta = <span id="sp-d2">—</span></strong>—與市場揭示0.0527高度一致，模型計算驗證正確</div>
-          </div>
-          <div class="vc-point">
-            <div class="vc-point-icon vpi-gold">△</div>
-            <div class="vc-point-text"><strong>美式近似合理</strong>—標的不配息時歐式B-S可替代，誤差極小</div>
-          </div>
+          <div class="vc-point"><div class="vc-icon vi-b">✓</div><div class="vc-point-text"><strong>理論價 <span id="sp-tp">—</span> 元</strong>—採BIV 275.7%，與市場揭示2.00元高度吻合</div></div>
+          <div class="vc-point"><div class="vc-icon vi-b">✓</div><div class="vc-point-text"><strong>Delta = <span id="sp-d">—</span></strong>—與市場揭示0.0527一致，模型驗證有效</div></div>
+          <div class="vc-point"><div class="vc-icon vi-g">△</div><div class="vc-point-text"><strong>模型限制已知</strong>—B-S假設波動率恆定，實務存在波動率微笑，本案影響極小</div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 綜合比較 -->
-  <div class="sec compare-section">
-    <div class="sec-head">綜合比較表</div>
-    <table class="compare-table">
-      <thead>
-        <tr><th>面向</th><th>案例一：百達-KY CB</th><th>案例二：059427 權證</th></tr>
-      </thead>
+  <div class="sec">
+    <div class="sec-head">綜合比較</div>
+    <table class="cmp-table">
+      <thead><tr><th>面向</th><th>案例一：百達-KY CB</th><th>案例二：059427 權證</th></tr></thead>
       <tbody>
-        <tr>
-          <td style="color:var(--muted)">結論</td>
-          <td><span class="rb rb-mid">附條件承接</span></td>
-          <td><span class="rb rb-low">定價完成・結果合理</span></td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted)">核心風險／特性</td>
-          <td>本業虧損・負債75%・溢價110%偏高</td>
-          <td>BIV 275.7%超高・價外19.6%・2X槓桿</td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted)">關鍵數字</td>
-          <td class="mono">溢價率110%・轉換價≈238元・負債比75%</td>
-          <td class="mono" id="s-keynums">理論價—元・Delta —・誤差±—</td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted)">建議行動</td>
-          <td>調降溢價率・加保護條款・重新評估</td>
-          <td>參數選用合理・B-S結果可直接援引</td>
-        </tr>
-        <tr>
-          <td style="color:var(--muted)">面試展現能力</td>
-          <td>風險識別力 ＋ 改善方案提出</td>
-          <td>量化分析力 ＋ 模型選用邏輯</td>
-        </tr>
+        <tr><td style="color:var(--muted)">結論</td><td><span class="rb rb-mid">附條件承接</span></td><td><span class="rb rb-low">定價完成・結果合理</span></td></tr>
+        <tr><td style="color:var(--muted)">核心問題</td><td>三大風險疊加強化，不可分開看</td><td>BIV 275.7%超高，原油2X槓桿特性</td></tr>
+        <tr><td style="color:var(--muted)">關鍵數字</td><td class="mono">溢價110%・轉換價238元・負債75%</td><td class="mono" id="s-keynums">—</td></tr>
+        <tr><td style="color:var(--muted)">承銷商/分析師視角</td><td>法律追訴風險不可忽視</td><td>模型邊界透明，BIV vs IV差異可解釋</td></tr>
+        <tr><td style="color:var(--muted)">展現能力</td><td>風險識別力 ＋ 實務判斷力</td><td>量化分析力 ＋ 模型選用邏輯</td></tr>
       </tbody>
     </table>
   </div>
-
-  <!-- 面試者視角 -->
-  <div class="sec">
-    <div class="sec-head">面試者角度 — 本次報告展現的四項核心能力</div>
-    <div class="interview-grid">
-      <div class="icard">
-        <div class="icard-num" style="color:var(--red)">01</div>
-        <div class="icard-title">風險識別與判斷力</div>
-        <div class="icard-body">不只說「有風險」，而是從財務報告、信用結構、發行條件三面向切入，點出溢價率110%嚴重偏離市場常態，並量化轉換價與現股價的差距，讓判斷有數字支撐。</div>
-      </div>
-      <div class="icard">
-        <div class="icard-num" style="color:var(--blue)">02</div>
-        <div class="icard-title">量化模型應用能力</div>
-        <div class="icard-body">正確建構B-S模型，逐步說明每個參數的選用邏輯（為何用BIV而非歷史波動率、為何用台灣公債利率），並以市場揭示值驗證模型準確性。</div>
-      </div>
-      <div class="icard">
-        <div class="icard-num" style="color:var(--gold)">03</div>
-        <div class="icard-title">實務取向的建議能力</div>
-        <div class="icard-body">案例一不只說「不承接」，而是提出具體可行的改善方案（降溢價率至30-50%、加財務維持條款、回售條款），展現承銷實務的理解深度。</div>
-      </div>
-      <div class="icard">
-        <div class="icard-num" style="color:var(--green)">04</div>
-        <div class="icard-title">定性定量的雙重整合</div>
-        <div class="icard-body">兩案合一體現「風險分析＋量化計算」的雙軌能力——承銷場景偏定性判斷，衍生品場景偏定量計算，符合金融機構對複合型人才的期待。</div>
-      </div>
-    </div>
-  </div>
 </div>
 
-<!-- ════════════════════════════════
-     PAGE 1 : 案例一 CB
-════════════════════════════════ -->
+<!-- ════ PAGE 1 案例一 ════ -->
 <div class="page" id="p1">
   <div class="ph">
     <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span>Case 01 ／ Convertible Bond Underwriting Risk</div>
@@ -393,18 +396,72 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
     <div class="sec-head">01 風險評估總結</div>
     <div class="verdict v-gold">
       <div class="vstamp vstamp-gold">附條件承接</div>
-      <div><div class="vtext">整體風險偏高，不建議直接承接現行條件</div><div class="vsub">須調降溢價率至30–50%並加入財務保護條款，方可重新評估</div></div>
+      <div><div class="vtext">整體風險偏高，不建議直接承接現行條件</div><div class="vsub">三大風險相互強化——單獨看尚可討論，疊加後承銷商面臨極高法律與聲譽風險</div></div>
     </div>
     <div class="g4">
-      <div class="card"><div class="card-label">整體風險等級</div><div class="kpi-val" style="color:var(--red)">中高風險</div><div class="kpi-sub">不建議直接承接</div></div>
-      <div class="card"><div class="card-label">轉換溢價率</div><div class="kpi-val" style="color:var(--red)">110%</div><div class="kpi-sub">轉換價≈238元</div></div>
+      <div class="card"><div class="card-label">整體風險</div><div class="kpi-val" style="color:var(--red)">中高</div><div class="kpi-sub">三風險疊加</div></div>
+      <div class="card"><div class="card-label">轉換溢價率</div><div class="kpi-val" style="color:var(--red)">110%</div><div class="kpi-sub">市場常態10-30%</div></div>
       <div class="card"><div class="card-label">2024本業EPS</div><div class="kpi-val" style="color:var(--red)">−1.01</div><div class="kpi-sub">本業持續虧損</div></div>
       <div class="card"><div class="card-label">併購後負債比</div><div class="kpi-val" style="color:var(--red)">75%</div><div class="kpi-sub">2024年僅32%</div></div>
     </div>
   </div>
 
   <div class="sec">
-    <div class="sec-head">02 公司概況與財務報告分析</div>
+    <div class="sec-head">02 三大風險相互強化</div>
+    <div class="risk-chain">
+      <div class="rc-block">
+        <div class="rc-num">風險 01</div>
+        <div class="rc-title">本業持續虧損</div>
+        <div class="rc-val">EPS −1.01</div>
+        <div class="rc-desc">核心業務無法獲利，2025Q4淨利率-10.57%，五年後4.5億還款來源存疑</div>
+        <div class="rc-arrow">→</div>
+      </div>
+      <div class="rc-block">
+        <div class="rc-num">風險 02</div>
+        <div class="rc-title">財務槓桿急升</div>
+        <div class="rc-val">負債比 75%</div>
+        <div class="rc-desc">BIGL併購帶來折舊攤提與匯損，CB再發後財務彈性幾乎用盡</div>
+        <div class="rc-arrow">→</div>
+      </div>
+      <div class="rc-block">
+        <div class="rc-num">風險 03</div>
+        <div class="rc-title">轉換誘因極低</div>
+        <div class="rc-val">溢價 110%</div>
+        <div class="rc-desc">轉換價≈238元，現股113.5元，CB幾乎確定以純債到期，公司必須還現金</div>
+        <div class="rc-arrow">→</div>
+      </div>
+      <div class="rc-block" style="background:rgba(255,75,75,.05)">
+        <div class="rc-num" style="color:var(--red)">結果</div>
+        <div class="rc-title" style="color:var(--red)">風險疊加</div>
+        <div class="rc-val" style="font-size:14px;color:var(--red)">非平均，是乘積</div>
+        <div class="rc-desc">三個問題同時存在，且相互惡化——虧損→更難還錢，高負債→更脆弱，純債到期→壓力更大</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">03 承銷商的真實風險所在</div>
+    <div class="legal-box">
+      <div class="lb-title">⚖ 承銷商法律責任風險</div>
+      <div class="lb-body">
+        110%溢價率的CB，<strong>法人機構幾乎不會碰</strong>——因為轉換誘因極低，風險明顯偏高。這代表最終持有者主要是散戶或特定買家。<br><br>
+        一旦公司財務持續惡化、到期無力還款，<strong>這批投資人求償的對象就是承銷商</strong>。承銷商不只面對聲譽損失，更面對實際的法律追訴。這才是本案比「風險偏高」更嚴重的地方。
+      </div>
+    </div>
+    <div class="g2">
+      <div class="finding fw">
+        <div class="finding-label">風險結論</div>
+        <div class="finding-body"><strong>不建議直接承接現行條件。</strong>三大風險疊加＋承銷商法律曝險，屬「中高風險」案件。</div>
+      </div>
+      <div class="finding fn">
+        <div class="finding-label">附條件承接建議</div>
+        <div class="finding-body">①<strong>溢價率調降至30-50%</strong>；②<strong>加財務維持條款</strong>（負債比上限觸發提前贖回）；③<strong>納入Put Option</strong>。三條缺一不可。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">04 公司財務分析</div>
     <div class="g2">
       <div class="card">
         <div class="card-label">基本資料</div>
@@ -414,16 +471,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
           <tr><td style="color:var(--muted)">資本額</td><td class="mono">5.35億元</td></tr>
           <tr><td style="color:var(--muted)">評價基準日股價</td><td class="mono" style="color:var(--gold)">113.5元</td></tr>
           <tr><td style="color:var(--muted)">主要子公司</td><td>BIGL（新加坡，2024年併購）</td></tr>
-          <tr><td style="color:var(--muted)">主要生產基地</td><td>泰國、新加坡（深圳廠處分中）</td></tr>
         </table>
       </div>
       <div class="card">
-        <div class="card-label">財務指標摘要（近兩年）</div>
+        <div class="card-label">財務指標摘要</div>
         <table class="tbl">
           <thead><tr><th>指標</th><th class="r">2023</th><th class="r">2024</th><th class="r">2025(估)</th></tr></thead>
           <tbody>
             <tr><td>EPS（元）</td><td class="mono r" style="color:var(--green)">2.99</td><td class="mono r" style="color:var(--red)">−1.01</td><td class="mono r" style="color:var(--gold)">0.72*</td></tr>
-            <tr><td>毛利率（%）</td><td class="mono r">—</td><td class="mono r">—</td><td class="mono r" style="color:var(--red)">8.48</td></tr>
             <tr><td>淨利率（%）</td><td class="mono r">—</td><td class="mono r">—</td><td class="mono r" style="color:var(--red)">−10.57</td></tr>
             <tr><td>負債比（%）</td><td class="mono r">—</td><td class="mono r" style="color:var(--gold)">32.4</td><td class="mono r" style="color:var(--red)">75.0</td></tr>
             <tr><td>營收（億）</td><td class="mono r">—</td><td class="mono r">29.4</td><td class="mono r" style="color:var(--green)">118.6</td></tr>
@@ -432,57 +487,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
         <div style="font-size:11px;color:var(--muted);margin-top:8px;">* 2025 H1累積EPS</div>
       </div>
     </div>
-    <div class="card" style="margin-top:18px;">
-      <div class="card-label">財務健康度評分（承銷視角）</div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-label">財務健康度（承銷視角）</div>
       <div class="g3" style="margin-top:8px;">
-        <div><div class="meter-label"><span>獲利能力</span><span style="color:var(--red)">3/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:30%;background:var(--red)"></div></div><div style="font-size:11px;color:var(--muted)">本業2024虧損，2025Q4淨利率-10.57%</div></div>
-        <div><div class="meter-label"><span>償債能力</span><span style="color:var(--gold)">5/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:50%;background:var(--gold)"></div></div><div style="font-size:11px;color:var(--muted)">流動比320%尚可，但負債比急升至75%</div></div>
-        <div><div class="meter-label"><span>成長動能</span><span style="color:var(--green)">7/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:70%;background:var(--green)"></div></div><div style="font-size:11px;color:var(--muted)">BIGL併購帶動營收年增565%</div></div>
+        <div><div class="meter-label"><span>獲利能力</span><span style="color:var(--red)">3/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:30%;background:var(--red)"></div></div><div style="font-size:11px;color:var(--muted)">本業虧損，2025Q4淨利率-10.57%</div></div>
+        <div><div class="meter-label"><span>償債能力</span><span style="color:var(--gold)">5/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:50%;background:var(--gold)"></div></div><div style="font-size:11px;color:var(--muted)">流動比320%尚可，負債比急升</div></div>
+        <div><div class="meter-label"><span>成長動能</span><span style="color:var(--green)">7/10</span></div><div class="meter-bar"><div class="meter-fill" style="width:70%;background:var(--green)"></div></div><div style="font-size:11px;color:var(--muted)">BIGL並表營收年增565%</div></div>
       </div>
     </div>
   </div>
 
   <div class="sec">
-    <div class="sec-head">03 信用狀況分析</div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-label">信用風險因子</div>
-        <table class="tbl">
-          <thead><tr><th>風險因子</th><th>狀況</th><th>等級</th></tr></thead>
-          <tbody>
-            <tr><td>還款來源(OCF)</td><td>本業虧損，現金流不穩</td><td><span class="rb rb-high">高</span></td></tr>
-            <tr><td>財務槓桿</td><td>負債比32%→75%</td><td><span class="rb rb-high">高</span></td></tr>
-            <tr><td>利息保障能力</td><td>本業虧損，EBIT為負</td><td><span class="rb rb-high">高</span></td></tr>
-            <tr><td>資產擔保</td><td>無擔保發行</td><td><span class="rb rb-high">高</span></td></tr>
-            <tr><td>流動性</td><td>流動比320%，短期尚可</td><td><span class="rb rb-mid">中</span></td></tr>
-            <tr><td>營收成長</td><td>BIGL並表年增565%</td><td><span class="rb rb-low">低</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="card">
-        <div class="card-label">三大核心疑慮</div>
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <div style="border:1px solid rgba(255,75,75,.2);border-radius:6px;padding:12px 14px;background:var(--red-d)"><div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:4px">⚠ 本業持續虧損</div><div style="font-size:12px;color:var(--muted)">核心業務獲利能力脆弱，5年後4.5億還款來源高度不確定</div></div>
-          <div style="border:1px solid rgba(245,200,66,.2);border-radius:6px;padding:12px 14px;background:var(--gold-d)"><div style="font-size:12px;font-weight:600;color:var(--gold);margin-bottom:4px">⚠ 併購後財務結構惡化</div><div style="font-size:12px;color:var(--muted)">BIGL帶來折舊攤提與匯損，負債比75%，CB發行後財務彈性更受限</div></div>
-          <div style="border:1px solid rgba(255,75,75,.2);border-radius:6px;padding:12px 14px;background:var(--red-d)"><div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:4px">⚠ 發行規模占資本額84%</div><div style="font-size:12px;color:var(--muted)">CB 4.5億 vs 資本額5.35億，若無法轉換，到期還款壓力極大</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-head">04 發行條件評析</div>
+    <div class="sec-head">05 發行條件評析</div>
     <div class="g2">
       <div class="card">
         <div class="card-label">CB條件結構</div>
         <table class="tbl">
-          <thead><tr><th>條件項目</th><th>本案</th><th>評析</th></tr></thead>
+          <thead><tr><th>條件</th><th>本案</th><th>評析</th></tr></thead>
           <tbody>
             <tr><td>發行規模</td><td class="mono">4.5億元</td><td>占資本額84%，偏大</td></tr>
-            <tr><td>期限</td><td class="mono">5年</td><td>不確定性高</td></tr>
+            <tr><td>期限</td><td class="mono">5年</td><td>長期不確定性高</td></tr>
             <tr><td>發行價格</td><td class="mono">面額100%</td><td>無折價保護</td></tr>
             <tr><td>轉換溢價率</td><td class="mono" style="color:var(--red)">110%</td><td>嚴重偏高</td></tr>
-            <tr><td>轉換價（估）</td><td class="mono" style="color:var(--red)">≈238元</td><td>需漲超過110%</td></tr>
+            <tr><td>轉換價（估）</td><td class="mono" style="color:var(--red)">≈238元</td><td>股價需漲超110%</td></tr>
             <tr><td>擔保狀態</td><td class="mono" style="color:var(--red)">無擔保</td><td>違約保護最低</td></tr>
           </tbody>
         </table>
@@ -490,37 +517,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
       <div class="card">
         <div class="card-label">溢價率市場比較</div>
         <div class="chart-wrap"><canvas id="cb-chart"></canvas></div>
-        <div style="margin-top:10px;font-size:12px;color:var(--muted)">本案110%溢價率遠高於市場常見10-30%；股價需漲 <strong style="color:var(--red)">+109.6%</strong> 才具轉換意義</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sec">
-    <div class="sec-head">05 承銷建議</div>
-    <div class="g2">
-      <div class="finding fw">
-        <div class="finding-label">風險結論</div>
-        <div class="finding-body">
-          <strong>不建議直接承接現行條件。</strong> 轉換溢價率110%、本業虧損、負債比75%、無擔保四項風險疊加，屬「中高風險」案件。
-        </div>
-      </div>
-      <div class="finding fn">
-        <div class="finding-label">附條件承接建議</div>
-        <div class="finding-body">
-          若發行人願意：①<strong>溢價率調降至30-50%</strong>；②<strong>加入財務維持條款</strong>（負債比上限）；③<strong>納入回售條款（Put）</strong>，可重新評估為有條件承接。
-        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)">本案110%遠超市場常態；股價需漲 <strong style="color:var(--red)">+109.6%</strong> 才具轉換意義</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     PAGE 2 : 案例二 權證
-════════════════════════════════ -->
+<!-- ════ PAGE 2 案例二 ════ -->
 <div class="page" id="p2">
   <div class="ph">
-    <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--blue);box-shadow:0 0 8px var(--blue)"></span>Case 02 ／ Warrant Pricing — Black-Scholes</div>
-    <h2 class="ph-title">059427 SGBR2X國泰5A購01<br>理論價格與Delta評估報告</h2>
+    <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--blue);box-shadow:0 0 8px var(--blue)"></span>Case 02 ／ Warrant Pricing — Black-Scholes Model</div>
+    <h2 class="ph-title">059427 SGBR2X國泰5A購01<br>理論價格與Delta評估</h2>
     <p class="ph-sub">評價基準日：2026/06/08 ｜ 標的：00715L 期街口布蘭特原油正2 ETF ｜ 發行：國泰證券</p>
   </div>
 
@@ -528,13 +535,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
     <div class="sec-head">01 評價結果</div>
     <div class="verdict v-blue">
       <div class="vstamp vstamp-blue">B-S定價完成</div>
-      <div><div class="vtext">理論價格 <strong id="v-tp" style="color:var(--gold)">—</strong> 元，Delta <strong id="v-delta" style="color:var(--gold)">—</strong>，與市場高度吻合</div><div class="vsub">採BIV 275.7%，台灣1Y公債1.75%，歐式B-S近似</div></div>
+      <div><div class="vtext">理論價格 <strong id="v-tp" style="color:var(--gold)">—</strong> 元，Delta <strong id="v-delta" style="color:var(--gold)">—</strong>，與市場高度吻合</div><div class="vsub">BIV 275.7%・台灣1Y公債1.75%・歐式近似美式（標的不配息）</div></div>
     </div>
     <div class="g2">
-      <div class="card"><div class="card-label">B-S 理論價格</div><div class="kpi-val" style="color:var(--gold)" id="kpi-tp">—</div><div class="kpi-sub">元 / 單位 = B-S Call × 0.07</div></div>
+      <div class="card"><div class="card-label">B-S 理論價格</div><div class="kpi-val" style="color:var(--gold)" id="kpi-tp">—</div><div class="kpi-sub">元 / 單位 = Call × 行使比例(0.07)</div></div>
       <div class="card"><div class="card-label">Delta 值</div><div class="kpi-val" style="color:var(--blue)" id="kpi-delta">—</div><div class="kpi-sub">標的每漲1元，權證漲 <span id="delta-per">—</span> 元</div></div>
     </div>
-    <div class="card" style="margin-top:18px;">
+    <div class="card" style="margin-top:16px;">
       <div class="card-label">模型 vs 市場比較</div>
       <div class="cmp"><div class="cmp-l">欄位</div><div class="cmp-r"><span style="color:var(--gold)">本模型</span><span style="color:var(--blue)">市場揭示</span><span style="color:var(--muted)">差異</span></div></div>
       <div class="cmp"><div class="cmp-l">理論價格（元）</div><div class="cmp-r"><span style="color:var(--gold)" id="c-tp-cmp">—</span><span style="color:var(--blue)">2.00</span><span style="color:var(--muted)" id="c-tp-diff">—</span></div></div>
@@ -544,53 +551,145 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
   </div>
 
   <div class="sec">
-    <div class="sec-head">02 參數採用原則</div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-label">五大輸入參數</div>
-        <table class="tbl">
-          <thead><tr><th>符號</th><th>名稱</th><th class="r">數值</th><th>採用原則</th></tr></thead>
-          <tbody>
-            <tr><td class="mono" style="color:var(--gold)">S</td><td>標的現貨價</td><td class="mono r">57.10</td><td style="font-size:12px">00715L 2026/06/08收盤（由6/9報價53.05回推）</td></tr>
-            <tr><td class="mono" style="color:var(--gold)">K</td><td>履約價</td><td class="mono r">66.00</td><td style="font-size:12px">發行條件書載明，契約義務</td></tr>
-            <tr><td class="mono" style="color:var(--gold)">T</td><td>剩餘期間</td><td class="mono r">0.3452</td><td style="font-size:12px">2026/06/08至10/12 = 126天÷365</td></tr>
-            <tr><td class="mono" style="color:var(--gold)">σ</td><td>波動率(BIV)</td><td class="mono r" style="color:var(--red)">275.7%</td><td style="font-size:12px">採BIV反映市場預期；原油2X ETF波動極端，歷史波動率不足</td></tr>
-            <tr><td class="mono" style="color:var(--gold)">r</td><td>無風險利率</td><td class="mono r">1.75%</td><td style="font-size:12px">台灣1Y公債殖利率；本幣計價、零信用風險</td></tr>
-          </tbody>
-        </table>
-        <div class="finding fn" style="margin-top:14px;margin-bottom:0">
-          <div class="finding-label">美式近似說明</div>
-          <div class="finding-body" style="font-size:13px">標的不配息時，美式Call提前執行永遠次優，最佳執行時點為到期日，故<strong>歐式B-S可合理替代</strong>，誤差極小。</div>
+    <div class="sec-head">02 互動參數計算器</div>
+    <div class="calc-hero">
+      <div class="calc-hero-title">🎛 調整參數，即時看理論價格與Delta變化</div>
+      <div class="calc-hero-sub">拖動滑桿改變輸入，觀察每個參數對定價的影響——K（履約價）與行使比例由發行條件書鎖定，不可調整</div>
+    </div>
+    <div class="calc-layout">
+      <div class="slider-group">
+        <div class="slider-item">
+          <div class="slider-header">
+            <div><span class="slider-sym">S</span><span class="slider-name">標的現貨價</span></div>
+            <div class="slider-val"><span id="sv-S">57.10</span> 元</div>
+          </div>
+          <input type="range" id="sl-S" min="30" max="100" step="0.5" value="57.10">
+          <div class="slider-range"><span>30元</span><span>評價基準日：57.10</span><span>100元</span></div>
+        </div>
+        <div class="slider-item">
+          <div class="slider-header">
+            <div><span class="slider-sym">σ</span><span class="slider-name">波動率（BIV）</span></div>
+            <div class="slider-val"><span id="sv-sig">275.7</span>%</div>
+          </div>
+          <input type="range" id="sl-sig" min="50" max="500" step="1" value="275.7">
+          <div class="slider-range"><span>50%</span><span>BIV基準：275.7%</span><span>500%</span></div>
+        </div>
+        <div class="slider-item">
+          <div class="slider-header">
+            <div><span class="slider-sym">T</span><span class="slider-name">剩餘天數</span></div>
+            <div class="slider-val"><span id="sv-T">126</span> 天</div>
+          </div>
+          <input type="range" id="sl-T" min="10" max="365" step="1" value="126">
+          <div class="slider-range"><span>10天</span><span>評價日：126天</span><span>365天</span></div>
+        </div>
+        <div class="slider-item">
+          <div class="slider-header">
+            <div><span class="slider-sym">r</span><span class="slider-name">無風險利率</span></div>
+            <div class="slider-val"><span id="sv-r">1.75</span>%</div>
+          </div>
+          <input type="range" id="sl-r" min="0.5" max="5" step="0.05" value="1.75">
+          <div class="slider-range"><span>0.5%</span><span>1Y公債：1.75%</span><span>5%</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+          <div class="slider-locked">
+            <div><div class="lock-label">K 履約價</div><div class="lock-reason">發行條件書載明，不可更改</div></div>
+            <div class="lock-val">66.00 元</div>
+          </div>
+          <div class="slider-locked">
+            <div><div class="lock-label">n 行使比例</div><div class="lock-reason">發行條件書載明，不可更改</div></div>
+            <div class="lock-val">0.07</div>
+          </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-label">逐步運算</div>
-        <div class="formula">
+
+      <div class="result-panel">
+        <div class="rp-title">即時計算結果</div>
+        <div class="rp-main">
+          <div class="rp-label">理論價格</div>
+          <div class="rp-big" style="color:var(--gold)" id="rp-tp">—</div>
+          <div class="rp-change" id="rp-tp-chg" style="color:var(--muted)">vs 基準值 2.21元</div>
+        </div>
+        <div class="rp-divider"></div>
+        <div class="rp-row"><div class="rp-row-label">Delta</div><div class="rp-row-val" style="color:var(--blue)" id="rp-delta">—</div></div>
+        <div class="rp-row"><div class="rp-row-label">B-S Call（原始）</div><div class="rp-row-val" id="rp-call">—</div></div>
+        <div class="rp-row"><div class="rp-row-label">d₁ ／ d₂</div><div class="rp-row-val" id="rp-d1d2">—</div></div>
+        <div class="rp-row"><div class="rp-row-label">N(d₁) ／ N(d₂)</div><div class="rp-row-val" id="rp-nd1nd2">—</div></div>
+        <div class="rp-chart-wrap"><canvas id="rp-chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">03 參數採用原則</div>
+    <div class="card">
+      <div class="card-label">五大輸入參數說明</div>
+      <table class="tbl">
+        <thead><tr><th>符號</th><th>名稱</th><th class="r">數值</th><th>採用原則</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--gold)">S</td><td>標的現貨價</td><td class="mono r">57.10</td><td style="font-size:12px">00715L 2026/06/08收盤，由6/9報價53.05回推（+4.05）</td></tr>
+          <tr><td class="mono" style="color:var(--gold)">K</td><td>履約價</td><td class="mono r">66.00</td><td style="font-size:12px">發行條件書載明，為契約義務，不可自行假設</td></tr>
+          <tr><td class="mono" style="color:var(--gold)">T</td><td>剩餘期間</td><td class="mono r">0.3452年</td><td style="font-size:12px">2026/06/08至到期2026/10/12 = 126天÷365</td></tr>
+          <tr><td class="mono" style="color:var(--gold)">σ</td><td>波動率</td><td class="mono r" style="color:var(--red)">275.7%</td><td style="font-size:12px">採BIV反映市場定價預期；原油2X ETF波動極端，歷史波動率不足以反映未來</td></tr>
+          <tr><td class="mono" style="color:var(--gold)">r</td><td>無風險利率</td><td class="mono r">1.75%</td><td style="font-size:12px">台灣1Y公債殖利率；商品本幣計價，以本地零信用風險基準為準</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-label">逐步運算（評價基準日數值）</div>
+      <div class="formula">
 <span class="hl">C</span> = S·N(d₁) − K·e<sup>−rT</sup>·N(d₂)<br>
 <span class="hl">d₁</span> = [ln(S/K)+(r+σ²/2)·T] / (σ·√T)<br>
 <span class="hl">d₂</span> = d₁ − σ·√T<br>
-<span class="hl2">理論價格</span> = C × n(行使比例)<br>
+<span class="hl2">理論價格</span> = C × n（行使比例 0.07）<br>
 <span class="hl2">Delta</span>    = N(d₁) × n
-        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">
         <div class="step"><div class="step-label">ln(S/K)</div><div class="step-val">= <span class="res" id="c-lnsk">—</span></div></div>
         <div class="step"><div class="step-label">(r+σ²/2)×T</div><div class="step-val">= <span class="res" id="c-drift">—</span></div></div>
         <div class="step"><div class="step-label">σ×√T</div><div class="step-val">= <span class="res" id="c-svt">—</span></div></div>
         <div class="step"><div class="step-label">d₁ ／ d₂</div><div class="step-val"><span class="res" id="c-d1">—</span> ／ <span class="res" id="c-d2">—</span></div></div>
         <div class="step"><div class="step-label">N(d₁) ／ N(d₂)</div><div class="step-val"><span class="res" id="c-nd1">—</span> ／ <span class="res" id="c-nd2">—</span></div></div>
         <div class="step"><div class="step-label">B-S Call</div><div class="step-val">= <span class="res" id="c-call">—</span> 元</div></div>
-        <div class="step" style="border-top:1px solid var(--gold);padding-top:10px"><div class="step-label">★ 理論價格</div><div class="step-val" style="color:var(--gold);font-size:15px;font-weight:600">= <span id="c-tp-final">—</span></div></div>
-        <div class="step"><div class="step-label">★ Delta</div><div class="step-val" style="color:var(--blue);font-size:15px;font-weight:600">= <span id="c-delta-final">—</span></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;">
+        <div class="step"><div class="step-label">★ 理論價格 = Call × 0.07</div><div class="step-val" style="color:var(--gold);font-size:15px;font-weight:600">= <span id="c-tp-final">—</span></div></div>
+        <div class="step"><div class="step-label">★ Delta = N(d₁) × 0.07</div><div class="step-val" style="color:var(--blue);font-size:15px;font-weight:600">= <span id="c-delta-final">—</span></div></div>
       </div>
     </div>
   </div>
 
   <div class="sec">
-    <div class="sec-head">03 敏感度分析</div>
+    <div class="sec-head">04 模型限制與適用邊界</div>
+    <div class="model-limit">
+      <div class="ml-title"><span style="color:var(--purple)">⚡</span>Black-Scholes 模型的已知限制</div>
+      <div class="ml-grid">
+        <div class="ml-item">
+          <div class="ml-item-title" style="color:var(--gold)">假設：波動率恆定</div>
+          <div class="ml-item-body">B-S假設σ在整個存續期間不變，但實際市場存在<strong style="color:var(--text)">波動率微笑</strong>現象（不同履約價的IV不同）。本案BIV與IV僅差1.45%，<strong style="color:var(--text)">影響極小</strong>。</div>
+        </div>
+        <div class="ml-item">
+          <div class="ml-item-title" style="color:var(--gold)">假設：美式→歐式近似</div>
+          <div class="ml-item-body">本商品為美式權證，嚴格應用二項樹。但<strong style="color:var(--text)">標的不配息</strong>時，美式Call提前執行永遠次優，最佳執行點 = 到期日，與歐式相同，<strong style="color:var(--text)">誤差極小</strong>。</div>
+        </div>
+        <div class="ml-item">
+          <div class="ml-item-title" style="color:var(--muted)">若要更精確</div>
+          <div class="ml-item-body">若波動率結構差異更大，可改用<strong style="color:var(--text)">Heston隨機波動率模型</strong>，它允許波動率本身也隨機變化，更能捕捉原油類商品的極端行情。</div>
+        </div>
+        <div class="ml-item">
+          <div class="ml-item-title" style="color:var(--green)">本案結論</div>
+          <div class="ml-item-body">BIV vs IV差1.45%，B-S歐式近似誤差可接受。計算結果（2.21元 vs 市場2.00元）高度吻合，<strong style="color:var(--text)">模型選用合理有效</strong>。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head">05 敏感度分析</div>
     <div class="g2">
       <div class="card"><div class="card-label">標的價格 vs 理論價格</div><div class="chart-wrap"><canvas id="wc1"></canvas></div></div>
       <div class="card"><div class="card-label">波動率 vs 理論價格</div><div class="chart-wrap"><canvas id="wc2"></canvas></div></div>
     </div>
-    <div class="card" style="margin-top:18px;">
+    <div class="card" style="margin-top:16px;">
       <div class="card-label">剩餘天數 vs 理論價格（時間耗損）</div>
       <div class="chart-wrap"><canvas id="wc3"></canvas></div>
     </div>
@@ -598,74 +697,124 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 </div>
 
 <div class="footer">
-  <span>評價基準日：2026/06/08 ｜ 資料來源：CMoney、TWSE</span>
-  <span>百達-KY(2236) CB承銷 ／ 059427 B-S定價</span>
+  <span>評價基準日：2026/06/08 ｜ 資料來源：CMoney、TWSE、公開資訊觀測站</span>
+  <span>百達-KY(2236) CB承銷風險 ／ 059427 B-S理論定價</span>
 </div>
 
 <script>
+// ── TAB ──
 function go(i){
-  document.querySelectorAll('.nav-tab').forEach((t,j)=>{t.classList.toggle('active',i===j);});
-  document.querySelectorAll('.page').forEach((p,j)=>{p.classList.toggle('active',i===j);});
+  document.querySelectorAll('.nav-tab').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('active',i===j));
 }
 
-// B-S
+// ── B-S ENGINE ──
 function normCDF(x){
   const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
   const s=x<0?-1:1,ax=Math.abs(x)/Math.sqrt(2),t=1/(1+p*ax);
   return 0.5*(1+s*(1-(((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t)*Math.exp(-ax*ax)));
 }
-function bs(S,K,T,r,sig){
+function bsCalc(S,K,T,r,sig,n){
   const lnsk=Math.log(S/K),dr=(r+sig*sig/2)*T,svt=sig*Math.sqrt(T);
   const d1=(lnsk+dr)/svt,d2=d1-svt,nd1=normCDF(d1),nd2=normCDF(d2);
-  return{d1,d2,nd1,nd2,call:S*nd1-K*Math.exp(-r*T)*nd2,lnsk,dr,svt};
+  const call=S*nd1-K*Math.exp(-r*T)*nd2;
+  return{d1,d2,nd1,nd2,call,tp:call*n,delta:nd1*n,lnsk,dr,svt};
 }
-const S=57.10,K=66,T=126/365,sig=2.757,r=0.0175,n=0.07;
-const res=bs(S,K,T,r,sig);
-const tp=(res.call*n).toFixed(2),dlt=(nd1=>nd1*n)(res.nd1).toFixed(4);
+
+// ── BASE VALUES ──
+const BASE={S:57.10,K:66,T:126/365,r:0.0175,sig:2.757,n:0.07};
+const base=bsCalc(BASE.S,BASE.K,BASE.T,BASE.r,BASE.sig,BASE.n);
+
+// ── DOM HELPER ──
 const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
 
-// Fill all fields
-[['s0-tp',tp+'元'],['s0-delta',dlt],['sp-tp2',tp],['sp-d2',dlt],
- ['v-tp',tp],['v-delta',dlt],['kpi-tp',tp],['kpi-delta',dlt],['delta-per',dlt],
- ['c-tp-cmp',tp],['c-d-cmp',dlt],
- ['c-tp-diff',((+tp-2)>=0?'+':'')+((+tp-2).toFixed(2))],
- ['c-d-diff',((+dlt-0.0527)>=0?'+':'')+((+dlt-0.0527).toFixed(4))],
- ['c-lnsk',res.lnsk.toFixed(4)],['c-drift',res.dr.toFixed(4)],['c-svt',res.svt.toFixed(4)],
- ['c-d1',res.d1.toFixed(4)],['c-d2',res.d2.toFixed(4)],
- ['c-nd1',res.nd1.toFixed(4)],['c-nd2',res.nd2.toFixed(4)],
- ['c-call',res.call.toFixed(4)],
- ['c-tp-final',tp+' 元'],['c-delta-final',dlt],
- ['s-keynums',`理論價${tp}元・Delta ${dlt}・誤差+${((+tp-2).toFixed(2))}`]
-].forEach(([id,v])=>set(id,v));
+// ── FILL STATIC FIELDS ──
+function fillBase(){
+  const tp=base.tp.toFixed(2),dlt=base.delta.toFixed(4);
+  [['s0-tp',tp+'元'],['s0-delta',dlt],['sp-tp',tp],['sp-d',dlt],
+   ['v-tp',tp],['v-delta',dlt],['kpi-tp',tp],['kpi-delta',dlt],['delta-per',dlt],
+   ['c-tp-cmp',tp],['c-d-cmp',dlt],
+   ['c-tp-diff',((+tp-2)>=0?'+':'')+((+tp-2).toFixed(2))],
+   ['c-d-diff',((+dlt-0.0527)>=0?'+':'')+((+dlt-0.0527).toFixed(4))],
+   ['c-lnsk',base.lnsk.toFixed(4)],['c-drift',base.dr.toFixed(4)],['c-svt',base.svt.toFixed(4)],
+   ['c-d1',base.d1.toFixed(4)],['c-d2',base.d2.toFixed(4)],
+   ['c-nd1',base.nd1.toFixed(4)],['c-nd2',base.nd2.toFixed(4)],
+   ['c-call',base.call.toFixed(4)],
+   ['c-tp-final',tp+' 元'],['c-delta-final',dlt],
+   ['s-keynums',`理論價${tp}元・Delta ${dlt}・誤差+${((+tp-2).toFixed(2))}`]
+  ].forEach(([id,v])=>set(id,v));
+}
+fillBase();
 
-// Charts
+// ── INTERACTIVE CALC ──
+let rpChart=null;
+function updateCalc(){
+  const S=parseFloat(document.getElementById('sl-S').value);
+  const sig=parseFloat(document.getElementById('sl-sig').value)/100;
+  const T=parseFloat(document.getElementById('sl-T').value)/365;
+  const r=parseFloat(document.getElementById('sl-r').value)/100;
+  set('sv-S',S.toFixed(2)); set('sv-sig',(sig*100).toFixed(1));
+  set('sv-T',Math.round(T*365)); set('sv-r',(r*100).toFixed(2));
+  const c=bsCalc(S,BASE.K,T,r,sig,BASE.n);
+  const tp=c.tp.toFixed(2),dlt=c.delta.toFixed(4);
+  set('rp-tp',tp+' 元'); set('rp-delta',dlt);
+  set('rp-call',c.call.toFixed(4)+' 元');
+  set('rp-d1d2',c.d1.toFixed(3)+' ／ '+c.d2.toFixed(3));
+  set('rp-nd1nd2',c.nd1.toFixed(4)+' ／ '+c.nd2.toFixed(4));
+  const diff=(c.tp-base.tp);
+  const chgEl=document.getElementById('rp-tp-chg');
+  if(chgEl){
+    chgEl.textContent=(diff>=0?'▲ +':'▼ ')+diff.toFixed(4)+' vs 基準 '+base.tp.toFixed(2)+'元';
+    chgEl.style.color=diff>0.001?'var(--green)':diff<-0.001?'var(--red)':'var(--muted)';
+  }
+  // update mini chart
+  const pts2=Array.from({length:20},(_,i)=>35+i*3.5);
+  const dat=pts2.map(s=>bsCalc(s,BASE.K,T,r,sig,BASE.n).tp);
+  if(!rpChart){
+    rpChart=new Chart(document.getElementById('rp-chart'),{type:'line',
+      data:{labels:pts2,datasets:[
+        {data:dat,borderColor:'var(--gold)',borderWidth:1.5,pointRadius:0,fill:true,backgroundColor:'rgba(245,200,66,.06)',tension:.4},
+        {data:pts2.map(()=>c.tp),borderColor:'rgba(79,142,247,.5)',borderWidth:1,borderDash:[3,3],pointRadius:0,fill:false}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:150},
+        plugins:{legend:{display:false}},
+        scales:{x:{display:false},y:{grid:{color:'#161a24'},ticks:{color:'#6b7a99',font:{size:9,family:'IBM Plex Mono'}}}}}
+    });
+  } else {
+    rpChart.data.datasets[0].data=dat;
+    rpChart.data.datasets[1].data=pts2.map(()=>c.tp);
+    rpChart.update('none');
+  }
+}
+['sl-S','sl-sig','sl-T','sl-r'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateCalc));
+updateCalc();
+
+// ── STATIC CHARTS ──
 const co={responsive:true,maintainAspectRatio:false,
   plugins:{legend:{display:false}},
   scales:{x:{grid:{color:'#161a24'},ticks:{color:'#6b7a99',font:{size:10,family:'IBM Plex Mono'}}},
           y:{grid:{color:'#161a24'},ticks:{color:'#6b7a99',font:{size:10,family:'IBM Plex Mono'}}}}};
 
-// CB premium chart
 new Chart(document.getElementById('cb-chart'),{type:'bar',
-  data:{labels:['市場低端\n10%','市場中位\n20%','市場高端\n30%','本案\n110%'],
+  data:{labels:['市場低端 10%','市場中位 20%','市場高端 30%','本案 110%'],
     datasets:[{data:[10,20,30,110],backgroundColor:['rgba(45,212,160,.6)','rgba(45,212,160,.6)','rgba(245,200,66,.6)','rgba(255,75,75,.85)'],borderRadius:4}]},
   options:{...co,scales:{...co.scales,y:{...co.scales.y,title:{display:true,text:'轉換溢價率(%)',color:'#6b7a99',font:{size:10}}}}}});
 
-// Warrant charts
 const pts=Array.from({length:31},(_,i)=>35+i*2);
 new Chart(document.getElementById('wc1'),{type:'line',data:{labels:pts,datasets:[
-  {data:pts.map(s=>(bs(s,K,T,r,sig).call*n)),borderColor:'#f5c842',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(245,200,66,.06)',tension:.4},
-  {data:pts.map(()=>+tp),borderColor:'#4f8ef7',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false}
+  {data:pts.map(s=>bsCalc(s,BASE.K,BASE.T,BASE.r,BASE.sig,BASE.n).tp),borderColor:'#f5c842',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(245,200,66,.06)',tension:.4},
+  {data:pts.map(()=>base.tp),borderColor:'#4f8ef7',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false}
 ]},options:{...co,plugins:{...co.plugins,tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(4)}元`}}}}});
 
 const vols=Array.from({length:30},(_,i)=>.5+i*.2);
 new Chart(document.getElementById('wc2'),{type:'line',data:{labels:vols.map(v=>(v*100).toFixed(0)+'%'),datasets:[
-  {data:vols.map(v=>(bs(S,K,T,r,v).call*n)),borderColor:'#ff4b4b',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(255,75,75,.06)',tension:.4},
-  {data:vols.map(()=>+tp),borderColor:'#6b7a99',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false}
+  {data:vols.map(v=>bsCalc(BASE.S,BASE.K,BASE.T,BASE.r,v,BASE.n).tp),borderColor:'#ff4b4b',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(255,75,75,.06)',tension:.4},
+  {data:vols.map(()=>base.tp),borderColor:'#6b7a99',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false}
 ]},options:{...co,plugins:{...co.plugins,tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(4)}元`}}}}});
 
 const days=Array.from({length:25},(_,i)=>5+i*5);
 new Chart(document.getElementById('wc3'),{type:'line',data:{labels:days.map(d=>d+'天'),datasets:[
-  {data:days.map(d=>(bs(S,K,d/365,r,sig).call*n)),borderColor:'#2dd4a0',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(45,212,160,.06)',tension:.4}
+  {data:days.map(d=>bsCalc(BASE.S,BASE.K,d/365,BASE.r,BASE.sig,BASE.n).tp),borderColor:'#2dd4a0',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(45,212,160,.06)',tension:.4}
 ]},options:{...co,plugins:{...co.plugins,tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(4)}元`}}}}});
 </script>
 </body>
