@@ -19,6 +19,8 @@
   --mono:'IBM Plex Mono',monospace;
   --serif:'Playfair Display',serif;
   --sans:'Inter',sans-serif;
+  --teal:#20c997;--teal-d:rgba(32,201,151,.1);
+  --orange:#fd7e14;--orange-d:rgba(253,126,20,.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -32,9 +34,74 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
   border-bottom:2px solid transparent;color:var(--muted);transition:.2s;white-space:nowrap;letter-spacing:.01em;}
 .nav-tab:hover{color:var(--text);}
 .nav-tab.active{color:var(--text);}
-.nav-tab.t0.active{border-bottom-color:var(--gold);}
-.nav-tab.t1.active{border-bottom-color:var(--red);}
-.nav-tab.t2.active{border-bottom-color:var(--blue);}
+.nav-tab.t3.active{border-bottom-color:var(--teal);}
+.nav-tab.t4.active{border-bottom-color:var(--orange);}
+.nb3{background:var(--teal-d);color:var(--teal);}
+.nb4{background:var(--orange-d);color:var(--orange);}
+
+/* ── LIVE PAGE STYLES ── */
+.live-hero{border-radius:12px;padding:28px 32px;margin-bottom:28px;}
+.lh-cb{background:linear-gradient(135deg,var(--teal-d),rgba(32,201,151,.03));border:1px solid rgba(32,201,151,.2);}
+.lh-wt{background:linear-gradient(135deg,var(--orange-d),rgba(253,126,20,.03));border:1px solid rgba(253,126,20,.2);}
+.live-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+.live-sub{font-size:13px;color:var(--muted);}
+.data-status{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+  font-size:11px;padding:4px 10px;border-radius:99px;margin-top:12px;}
+.ds-ok{background:var(--green-d);color:var(--green);border:1px solid rgba(45,212,160,.2);}
+.ds-warn{background:var(--gold-d);color:var(--gold);border:1px solid rgba(245,200,66,.2);}
+.ds-err{background:var(--red-d);color:var(--red);border:1px solid rgba(255,75,75,.2);}
+
+.date-picker-row{display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;}
+.dp-label{font-size:13px;color:var(--muted);white-space:nowrap;}
+input[type=date]{
+  background:var(--s1);border:1px solid var(--border2);border-radius:6px;
+  padding:8px 14px;font-family:var(--mono);font-size:13px;color:var(--text);
+  outline:none;cursor:pointer;
+}
+input[type=date]:focus{border-color:var(--blue);}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.6);}
+.dp-btn{background:var(--blue);color:#fff;border:none;border-radius:6px;
+  padding:8px 18px;font-family:var(--mono);font-size:12px;cursor:pointer;
+  letter-spacing:.04em;transition:.2s;}
+.dp-btn:hover{opacity:.85;}
+.dp-btn.teal{background:var(--teal);}
+.dp-btn.orange{background:var(--orange);}
+
+.live-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.lr-cell{background:var(--s1);border:1px solid var(--border2);border-radius:8px;padding:18px 20px;}
+.lr-label{font-size:10px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.lr-val{font-family:var(--mono);font-size:22px;font-weight:600;}
+.lr-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.input-field{background:var(--s1);border:1px solid var(--border2);border-radius:8px;padding:14px 18px;}
+.if-label{font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.if-inner{display:flex;align-items:center;gap:8px;}
+.if-inner input[type=number]{
+  background:transparent;border:none;outline:none;
+  font-family:var(--mono);font-size:18px;font-weight:600;color:var(--text);
+  width:100%;
+}
+.if-unit{font-family:var(--mono);font-size:13px;color:var(--muted);}
+.if-hint{font-size:11px;color:var(--dim);margin-top:6px;}
+
+.no-data-box{background:var(--s1);border:1px solid var(--border);border-radius:8px;
+  padding:32px;text-align:center;color:var(--muted);font-size:13px;margin:20px 0;}
+
+.risk-score-bar{margin-bottom:24px;}
+.rsb-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.rsb-name{font-size:13px;width:120px;flex-shrink:0;}
+.rsb-track{flex:1;height:6px;background:var(--s3);border-radius:3px;overflow:hidden;}
+.rsb-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+.rsb-val{font-family:var(--mono);font-size:12px;width:60px;text-align:right;flex-shrink:0;}
+
+.live-calc-result{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:24px;margin-top:20px;}
+.lcr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.lcr-row:last-child{border-bottom:none;}
+.lcr-l{font-size:13px;color:var(--muted);}
+.lcr-r{font-family:var(--mono);font-size:13px;font-weight:600;}
+
+@media(max-width:860px){.live-result-grid{grid-template-columns:1fr 1fr;}.input-row{grid-template-columns:1fr;}}
 .nbadge{display:inline-block;font-size:9px;font-family:var(--mono);padding:1px 6px;
   border-radius:2px;margin-left:6px;vertical-align:middle;letter-spacing:.06em;}
 .nb0{background:var(--gold-d);color:var(--gold);}
@@ -315,6 +382,8 @@ input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 5px rgba(79,142,2
     <div class="nav-tab t0 active" onclick="go(0)">結論摘要 <span class="nbadge nb0">Overview</span></div>
     <div class="nav-tab t1" onclick="go(1)">案例一 <span class="nbadge nb1">CB承銷</span></div>
     <div class="nav-tab t2" onclick="go(2)">案例二 <span class="nbadge nb2">權證定價</span></div>
+    <div class="nav-tab t3" onclick="go(3)">活版 CB <span class="nbadge nb3">Live</span></div>
+    <div class="nav-tab t4" onclick="go(4)">活版權證 <span class="nbadge nb4">Live</span></div>
   </div>
 </nav>
 
@@ -696,9 +765,166 @@ input[type=range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 5px rgba(79,142,2
   </div>
 </div>
 
+<!-- ════ PAGE 3 活版CB ════ -->
+<div class="page" id="p3">
+  <div class="ph">
+    <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--teal);box-shadow:0 0 8px var(--teal)"></span>Live / 活版 Case 01 ／ CB Risk Monitor</div>
+    <h2 class="ph-title">百達-KY (2236)<br>CB承銷風險即時評估</h2>
+    <p class="ph-sub">選擇評價基準日，自動載入當日股價，重新計算轉換誘因與風險指標</p>
+  </div>
+
+  <div class="live-hero lh-cb">
+    <div class="live-title">📅 選擇評價基準日</div>
+    <div class="live-sub">股價資料由 GitHub Actions 每日自動更新（台灣時間 15:30 後）；2026/06/08 為詳細案例基準日</div>
+    <div id="p3-status" class="data-status ds-warn">⏳ 載入資料中...</div>
+  </div>
+
+  <div class="date-picker-row">
+    <div class="dp-label">評價基準日</div>
+    <input type="date" id="p3-date" value="2026-06-08" min="2026-06-08" max="2026-10-12">
+    <button class="dp-btn teal" onclick="runCBLive()">重新計算</button>
+    <span id="p3-price-hint" style="font-size:12px;color:var(--muted);font-family:var(--mono)"></span>
+  </div>
+
+  <div id="p3-results">
+    <div class="live-result-grid">
+      <div class="lr-cell">
+        <div class="lr-label">當日股價</div>
+        <div class="lr-val" style="color:var(--gold)" id="p3-s">—</div>
+        <div class="lr-sub">2236.TW 收盤價</div>
+      </div>
+      <div class="lr-cell">
+        <div class="lr-label">估算轉換價</div>
+        <div class="lr-val" style="color:var(--red)" id="p3-conv">—</div>
+        <div class="lr-sub">× (1 + 110%) 溢價率</div>
+      </div>
+      <div class="lr-cell">
+        <div class="lr-label">需漲幅</div>
+        <div class="lr-val" style="color:var(--red)" id="p3-upside">—</div>
+        <div class="lr-sub">才具轉換誘因</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">風險指標（基於輸入財務數據）</div>
+      <div class="input-row">
+        <div class="input-field">
+          <div class="if-label">最近一期 EPS（元）</div>
+          <div class="if-inner">
+            <input type="number" id="p3-eps" value="-1.01" step="0.01">
+            <span class="if-unit">元</span>
+          </div>
+          <div class="if-hint">虧損請輸入負值，例如 -1.01</div>
+        </div>
+        <div class="input-field">
+          <div class="if-label">最新負債比（%）</div>
+          <div class="if-inner">
+            <input type="number" id="p3-debt" value="75" step="0.1" min="0" max="100">
+            <span class="if-unit">%</span>
+          </div>
+          <div class="if-hint">公告財報數字</div>
+        </div>
+      </div>
+      <div class="risk-score-bar" id="p3-risk-bars"></div>
+    </div>
+
+    <div class="finding" id="p3-verdict-box">
+      <div class="finding-label">即時風險結論</div>
+      <div class="finding-body" id="p3-verdict-text">請輸入數據後點擊重新計算</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE 4 活版權證 ════ -->
+<div class="page" id="p4">
+  <div class="ph">
+    <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--orange);box-shadow:0 0 8px var(--orange)"></span>Live / 活版 Case 02 ／ Warrant Pricer</div>
+    <h2 class="ph-title">059427 SGBR2X國泰5A購01<br>B-S 理論定價即時計算</h2>
+    <p class="ph-sub">選擇評價基準日，T 自動計算，輸入當日股價，即時輸出理論價格與Delta</p>
+  </div>
+
+  <div class="live-hero lh-wt">
+    <div class="live-title">📅 選擇評價基準日</div>
+    <div class="live-sub">到期日固定為 2026/10/12；T 由所選日期自動計算。股價每日更新，BIV 建議至 CMoney 查詢當日數值</div>
+    <div id="p4-status" class="data-status ds-warn">⏳ 載入資料中...</div>
+  </div>
+
+  <div class="date-picker-row">
+    <div class="dp-label">評價基準日</div>
+    <input type="date" id="p4-date" value="2026-06-08" min="2026-06-01" max="2026-10-11">
+    <button class="dp-btn orange" onclick="runWarrantLive()">重新計算</button>
+  </div>
+
+  <div class="live-result-grid" style="margin-bottom:20px;">
+    <div class="lr-cell">
+      <div class="lr-label">剩餘天數 T</div>
+      <div class="lr-val" style="color:var(--orange)" id="p4-T">—</div>
+      <div class="lr-sub">自動計算至 2026/10/12</div>
+    </div>
+    <div class="lr-cell">
+      <div class="lr-label">理論價格</div>
+      <div class="lr-val" style="color:var(--gold)" id="p4-tp">—</div>
+      <div class="lr-sub">元 / 單位</div>
+    </div>
+    <div class="lr-cell">
+      <div class="lr-label">Delta</div>
+      <div class="lr-val" style="color:var(--blue)" id="p4-delta">—</div>
+      <div class="lr-sub">N(d₁) × 0.07</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <div class="input-field">
+      <div class="if-label">S 標的現貨價（00715L）</div>
+      <div class="if-inner">
+        <input type="number" id="p4-S" value="57.10" step="0.01" min="1">
+        <span class="if-unit">元</span>
+      </div>
+      <div class="if-hint" id="p4-s-hint">建議查詢 CMoney 或 Yahoo Finance 當日收盤</div>
+    </div>
+    <div class="input-field">
+      <div class="if-label">σ 波動率 BIV（%）</div>
+      <div class="if-inner">
+        <input type="number" id="p4-sig" value="275.7" step="0.1" min="1" max="1000">
+        <span class="if-unit">%</span>
+      </div>
+      <div class="if-hint" id="p4-sig-hint">建議查 CMoney 權證頁面 BIV 欄位</div>
+    </div>
+  </div>
+
+  <div class="live-calc-result">
+    <div class="card-label" style="margin-bottom:16px;">B-S 逐步運算</div>
+    <div class="lcr-row"><div class="lcr-l">履約價 K（固定）</div><div class="lcr-r">66.00 元</div></div>
+    <div class="lcr-row"><div class="lcr-l">行使比例 n（固定）</div><div class="lcr-r">0.07</div></div>
+    <div class="lcr-row"><div class="lcr-l">無風險利率 r</div><div class="lcr-r">1.75%（台灣1Y公債）</div></div>
+    <div class="lcr-row"><div class="lcr-l">T（年化）</div><div class="lcr-r" id="p4-T-yr">—</div></div>
+    <div class="lcr-row"><div class="lcr-l">ln(S/K)</div><div class="lcr-r" id="p4-lnsk">—</div></div>
+    <div class="lcr-row"><div class="lcr-l">d₁ ／ d₂</div><div class="lcr-r" id="p4-d1d2">—</div></div>
+    <div class="lcr-row"><div class="lcr-l">N(d₁) ／ N(d₂)</div><div class="lcr-r" id="p4-nd1nd2">—</div></div>
+    <div class="lcr-row"><div class="lcr-l">B-S Call（原始）</div><div class="lcr-r" id="p4-call">—</div></div>
+    <div class="lcr-row" style="border-top:1px solid var(--orange);padding-top:12px;">
+      <div class="lcr-l" style="font-weight:600;color:var(--text)">★ 理論價格 = Call × 0.07</div>
+      <div class="lcr-r" style="color:var(--gold);font-size:16px" id="p4-tp-final">—</div>
+    </div>
+    <div class="lcr-row">
+      <div class="lcr-l" style="font-weight:600;color:var(--text)">★ Delta = N(d₁) × 0.07</div>
+      <div class="lcr-r" style="color:var(--blue);font-size:16px" id="p4-delta-final">—</div>
+    </div>
+  </div>
+
+  <div class="finding fp" style="margin-top:16px;">
+    <div class="finding-label">使用說明</div>
+    <div class="finding-body" style="font-size:13px">
+      <strong>S（股價）</strong>：若所選日期有自動抓取數據，會自動填入；否則請手動輸入CMoney當日收盤價。<br>
+      <strong>BIV</strong>：系統無法自動取得，請至 CMoney 搜尋「059427」，查看「BIV」欄位後填入。<br>
+      <strong>到期後</strong>：2026/10/12 後本商品到期，此計算器不再適用。
+    </div>
+  </div>
+</div>
+
 <div class="footer">
-  <span>評價基準日：2026/06/08 ｜ 資料來源：CMoney、TWSE、公開資訊觀測站</span>
-  <span>百達-KY(2236) CB承銷風險 ／ 059427 B-S理論定價</span>
+  <span>評價基準日：2026/06/08（詳細版）｜ 活版由 GitHub Actions 每日更新 ｜ 資料來源：Yahoo Finance、CMoney</span>
+  <span>百達-KY(2236) CB ／ 059427 B-S定價</span>
 </div>
 
 <script>
@@ -707,7 +933,6 @@ function go(i){
   document.querySelectorAll('.nav-tab').forEach((t,j)=>t.classList.toggle('active',i===j));
   document.querySelectorAll('.page').forEach((p,j)=>p.classList.toggle('active',i===j));
 }
-
 // ── B-S ENGINE ──
 function normCDF(x){
   const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
@@ -816,6 +1041,198 @@ const days=Array.from({length:25},(_,i)=>5+i*5);
 new Chart(document.getElementById('wc3'),{type:'line',data:{labels:days.map(d=>d+'天'),datasets:[
   {data:days.map(d=>bsCalc(BASE.S,BASE.K,d/365,BASE.r,BASE.sig,BASE.n).tp),borderColor:'#2dd4a0',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(45,212,160,.06)',tension:.4}
 ]},options:{...co,plugins:{...co.plugins,tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(4)}元`}}}}});
+
+// ── LOAD DATA.JSON ──
+let stockData = null;
+
+async function loadData(){
+  try {
+    const res = await fetch('./data.json');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    stockData = await res.json();
+    const lastUp = stockData.last_updated || '未知';
+    setStatus('p3-status', `✓ 資料已載入，最後更新：${lastUp}`, 'ok');
+    setStatus('p4-status', `✓ 資料已載入，最後更新：${lastUp}`, 'ok');
+    // 預設填入6/8數據
+    runCBLive();
+    runWarrantLive();
+  } catch(e) {
+    setStatus('p3-status', '⚠ 無法載入 data.json，請檢查 GitHub Actions 設定', 'err');
+    setStatus('p4-status', '⚠ 無法載入 data.json，請檢查 GitHub Actions 設定', 'err');
+    console.warn('data.json load failed:', e);
+    // 仍然用預設值運行
+    runWarrantLive();
+  }
+}
+
+function setStatus(id, msg, type){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'data-status ds-' + type;
+}
+
+function getPrice(ticker, dateStr){
+  if(!stockData) return null;
+  const prices = stockData.prices?.[ticker];
+  if(!prices) return null;
+  // 完全匹配
+  if(prices[dateStr]) return prices[dateStr];
+  // 找最近的前一個交易日
+  const dates = Object.keys(prices).sort();
+  let best = null;
+  for(const d of dates){
+    if(d <= dateStr) best = d;
+  }
+  return best ? prices[best] : null;
+}
+
+function getVolatility(dateStr){
+  if(!stockData?.volatility) return 275.7; // 默認
+  const vols = stockData.volatility;
+  if(vols[dateStr]) return vols[dateStr];
+  const dates = Object.keys(vols).sort();
+  let best = null;
+  for(const d of dates){
+    if(d <= dateStr) best = d;
+  }
+  return best ? vols[best] : 275.7;
+}
+
+function dateDiff(dateStr1, dateStr2){
+  const d1 = new Date(dateStr1);
+  const d2 = new Date(dateStr2);
+  return Math.round((d2-d1)/(1000*60*60*24));
+}
+
+// ── LIVE CB (Page 3) ──
+function runCBLive(){
+  const dateStr = document.getElementById('p3-date').value;
+  const eps = parseFloat(document.getElementById('p3-eps').value) || -1.01;
+  const debt = parseFloat(document.getElementById('p3-debt').value) || 75;
+  const premium = 1.10; // 110%
+
+  // 抓股價
+  const s = getPrice('2236', dateStr);
+  const hintEl = document.getElementById('p3-price-hint');
+
+  let S = s || 113.50;
+  if(s){
+    if(hintEl) hintEl.textContent = `已載入 ${dateStr} 股價：${s} 元`;
+  } else {
+    if(hintEl) hintEl.textContent = `⚠ ${dateStr} 無資料，使用最近可用價格`;
+  }
+
+  const convPrice = S * (1 + premium);
+  const upside = ((convPrice / S - 1) * 100).toFixed(1);
+
+  const set = (id, v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+  set('p3-s', S.toFixed(2) + ' 元');
+  set('p3-conv', convPrice.toFixed(1) + ' 元');
+  set('p3-upside', '+' + upside + '%');
+
+  // 風險評分
+  const scores = [
+    { name: '獲利能力', score: eps >= 0 ? 70 : eps >= -0.5 ? 45 : 20, color: eps>=0?'var(--green)':eps>=-0.5?'var(--gold)':'var(--red)', hint: `EPS ${eps}元` },
+    { name: '財務槓桿', score: debt <= 40 ? 80 : debt <= 60 ? 55 : debt <= 75 ? 35 : 20, color: debt<=40?'var(--green)':debt<=60?'var(--gold)':'var(--red)', hint: `負債比 ${debt}%` },
+    { name: '轉換誘因', score: 8, color: 'var(--red)', hint: '溢價率110%，幾乎為零' },
+    { name: '擔保保護', score: 5, color: 'var(--red)', hint: '無擔保發行' },
+  ];
+
+  const barsEl = document.getElementById('p3-risk-bars');
+  if(barsEl){
+    barsEl.innerHTML = scores.map(s=>`
+      <div class="rsb-row">
+        <div class="rsb-name">${s.name}</div>
+        <div class="rsb-track"><div class="rsb-fill" style="width:${s.score}%;background:${s.color}"></div></div>
+        <div class="rsb-val" style="color:${s.color}">${s.hint}</div>
+      </div>`).join('');
+  }
+
+  // 結論
+  const avgScore = scores.reduce((a,b)=>a+b.score,0)/scores.length;
+  const verdict = document.getElementById('p3-verdict-text');
+  const box = document.getElementById('p3-verdict-box');
+  if(verdict && box){
+    if(avgScore < 30){
+      box.className = 'finding fw';
+      verdict.innerHTML = `<strong>風險偏高，建議附條件承接。</strong> 評價基準日 ${dateStr}，股價 ${S.toFixed(2)} 元，轉換價約 ${convPrice.toFixed(1)} 元，需漲 +${upside}% 才有轉換誘因；本業EPS ${eps}元，負債比 ${debt}%，三大風險疊加。建議調降溢價率、加入保護條款。`;
+    } else if(avgScore < 55){
+      box.className = 'finding fn';
+      verdict.innerHTML = `<strong>風險中等，需觀察。</strong> 評價基準日 ${dateStr}，股價 ${S.toFixed(2)} 元，轉換誘因有限（溢價率110%固定），財務數據較基準日有改善，但仍須謹慎評估。`;
+    } else {
+      box.className = 'finding fo';
+      verdict.innerHTML = `<strong>風險降低，可進一步評估。</strong> 評價基準日 ${dateStr}，財務狀況已改善，但溢價率110%仍偏高，轉換誘因依然有限。`;
+    }
+  }
+}
+
+// ── LIVE WARRANT (Page 4) ──
+function runWarrantLive(){
+  const EXPIRY = '2026-10-12';
+  const K = 66, n = 0.07, r = 0.0175;
+  const dateStr = document.getElementById('p4-date')?.value || '2026-06-08';
+
+  // T 自動計算
+  const T_days = dateDiff(dateStr, EXPIRY);
+  const T = T_days / 365;
+
+  const set = (id,v) => { const e=document.getElementById(id); if(e) e.textContent=v; };
+  set('p4-T', T_days + ' 天');
+  set('p4-T-yr', T.toFixed(4) + ' 年');
+
+  if(T_days <= 0){
+    set('p4-tp', '已到期'); set('p4-delta', '—');
+    return;
+  }
+
+  // 股價：自動填入或手動
+  const autoS = getPrice('00715L', dateStr);
+  const sInput = document.getElementById('p4-S');
+  const sHint = document.getElementById('p4-s-hint');
+  if(autoS && sInput){
+    sInput.value = autoS;
+    if(sHint) sHint.textContent = `✓ 已自動載入 ${dateStr} 資料：${autoS} 元`;
+  } else {
+    if(sHint) sHint.textContent = `⚠ ${dateStr} 無自動資料，請手動輸入CMoney收盤價`;
+  }
+
+  // 波動率：自動填入或手動
+  const autoSig = getVolatility(dateStr);
+  const sigInput = document.getElementById('p4-sig');
+  const sigHint = document.getElementById('p4-sig-hint');
+  if(autoSig && sigInput){
+    sigInput.value = autoSig;
+    if(sigHint) sigHint.textContent = `✓ 已載入歷史波動率估計值 ${autoSig}%（建議至CMoney確認BIV）`;
+  }
+
+  // 讀取輸入值計算
+  const S = parseFloat(sInput?.value) || 57.10;
+  const sig = (parseFloat(sigInput?.value) || 275.7) / 100;
+
+  const c = bsCalc(S, K, T, r, sig, n);
+  const tp = c.tp.toFixed(2), dlt = c.delta.toFixed(4);
+
+  set('p4-tp', tp + ' 元');
+  set('p4-delta', dlt);
+  set('p4-lnsk', c.lnsk.toFixed(4));
+  set('p4-d1d2', c.d1.toFixed(4) + ' ／ ' + c.d2.toFixed(4));
+  set('p4-nd1nd2', c.nd1.toFixed(4) + ' ／ ' + c.nd2.toFixed(4));
+  set('p4-call', c.call.toFixed(4) + ' 元');
+  set('p4-tp-final', tp + ' 元');
+  set('p4-delta-final', dlt);
+}
+
+// 讓輸入框即時觸發計算
+document.getElementById('p4-S')?.addEventListener('input', runWarrantLive);
+document.getElementById('p4-sig')?.addEventListener('input', runWarrantLive);
+document.getElementById('p4-date')?.addEventListener('change', runWarrantLive);
+document.getElementById('p3-date')?.addEventListener('change', runCBLive);
+document.getElementById('p3-eps')?.addEventListener('input', runCBLive);
+document.getElementById('p3-debt')?.addEventListener('input', runCBLive);
+
+// 啟動時載入資料
+loadData();
 </script>
 </body>
 </html>
