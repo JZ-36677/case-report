@@ -273,7 +273,40 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
 .cmp-table td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;}
 .cmp-table tr:last-child td{border-bottom:none;}
 
-/* FOOTER */
+/* QUESTION CARDS */
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;}
+.q-card{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:20px 22px;position:relative;overflow:hidden;}
+.q-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.q-card.c1::before{background:var(--red);}
+.q-card.c2::before{background:var(--blue);}
+.q-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-bottom:12px;}
+.qb-r{background:var(--red-d);color:var(--red);border:1px solid rgba(255,75,75,.2);}
+.qb-b{background:var(--blue-d);color:var(--blue);border:1px solid rgba(79,142,247,.2);}
+.q-text{font-size:13px;color:var(--muted);line-height:1.85;}
+.q-text strong{color:var(--text);}
+.q-note{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--dim);font-family:var(--mono);}
+
+/* QUESTION BANNER on case pages */
+.q-banner{background:rgba(255,255,255,.02);border:1px solid var(--border2);border-radius:8px;padding:16px 20px;margin-bottom:32px;position:relative;overflow:hidden;}
+.q-banner::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.q-banner.c1::before{background:var(--red);}
+.q-banner.c2::before{background:var(--blue);}
+.q-banner-label{font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.q-banner-text{font-size:13px;color:var(--muted);line-height:1.8;}
+.q-banner-text strong{color:var(--text);}
+
+/* SPARKLINE SECTION */
+.spark-wrap{background:var(--s1);border:1px solid var(--border2);border-radius:10px;padding:20px 22px;margin-bottom:24px;}
+.spark-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.spark-title{font-size:13px;font-weight:600;}
+.spark-legend{display:flex;gap:16px;}
+.spark-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);}
+.spark-leg-dot{width:10px;height:3px;border-radius:2px;}
+.spark-sub{font-size:11px;color:var(--dim);margin-bottom:16px;}
+.spark-chart{position:relative;height:180px;}
+.spark-empty{height:120px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--dim);font-family:var(--mono);}
+
+@media(max-width:520px){.q-grid{grid-template-columns:1fr;}}
 .footer{border-top:1px solid var(--border);padding:18px 44px;font-size:11px;color:var(--muted);font-family:var(--mono);display:flex;justify-content:space-between;gap:16px;}
 
 @media(max-width:860px){
@@ -315,6 +348,31 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
       <div class="sh-eyebrow">承銷案件暨衍生商品評估報告 ／ 評價基準日 2026.06.08</div>
       <h1 class="sh-title">兩案結論摘要</h1>
       <p class="sh-desc">以承銷商與量化分析師雙重視角，進行系統性評估。案例一與二均支援即時切換評價基準日，重新計算關鍵數字。</p>
+    </div>
+
+    <!-- 面試題目 -->
+    <div class="sec">
+      <div class="sec-head">📋 面試題目</div>
+      <div class="q-grid">
+        <div class="q-card c1">
+          <div class="q-badge qb-r">案例一 ／ CB承銷</div>
+          <div class="q-text">
+            百達-KY (2236) 擬募集發行 <strong>5年期 4.5億元無擔保可轉換公司債</strong>，轉換溢價率上限暫訂 <strong>110%</strong>，以依面額 100% 發行，評價基準日為 <strong>2026/06/08</strong>。
+            <br><br>
+            試就該公司財務報告、信用狀況、發行條件等，給予您對<strong>參與本承銷案件的風險評估意見</strong>。
+          </div>
+          <div class="q-note">考核能力：財報解讀 × 信用分析 × 承銷判斷</div>
+        </div>
+        <div class="q-card c2">
+          <div class="q-badge qb-b">案例二 ／ 衍生商品定價</div>
+          <div class="q-text">
+            試評估 <strong>SGBR2X 國泰5A購01（證券代號：059427）</strong>之理論價格（評價基準日為 <strong>2026/06/08</strong>）及 <strong>Delta 值</strong>，並說明各參數採用原則及原因。
+            <br><br>
+            （<strong>請附上理論價格的運算結果畫面</strong>）
+          </div>
+          <div class="q-note">考核能力：選擇權定價 × B-S模型 × 參數邏輯</div>
+        </div>
+      </div>
     </div>
     <div class="sec">
       <div class="sec-head">核心數字一覽</div>
@@ -386,6 +444,10 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
 
   <div class="page-inner">
     <div class="ph">
+      <div class="q-banner c1">
+        <div class="q-banner-label">📋 面試題目 — 案例一</div>
+        <div class="q-banner-text">百達-KY (2236) 擬募集發行 <strong>5年期 4.5億元無擔保可轉換公司債</strong>，轉換溢價率上限暫訂 <strong>110%</strong>，以依面額 100% 發行，評價基準日為 2026/06/08。試就該公司財務報告、信用狀況、發行條件等，給予您對<strong>參與本承銷案件的風險評估意見</strong>。</div>
+      </div>
       <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--red);box-shadow:0 0 8px var(--red)"></span>Case 01 ／ Convertible Bond Underwriting Risk</div>
       <h2 class="ph-title">百達-KY (2236)<br>無擔保可轉換公司債承銷風險評估</h2>
       <p class="ph-sub">發行規模：4.5億元 ｜ 期限：5年 ｜ 轉換溢價率上限：110% ｜ 無擔保</p>
@@ -555,6 +617,10 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
 
   <div class="page-inner">
     <div class="ph">
+      <div class="q-banner c2">
+        <div class="q-banner-label">📋 面試題目 — 案例二</div>
+        <div class="q-banner-text">試評估 <strong>SGBR2X 國泰5A購01（證券代號：059427）</strong>之理論價格（評價基準日為 2026/06/08）及 <strong>Delta 值</strong>，並說明各參數採用原則及原因。（<strong>請附上理論價格的運算結果畫面</strong>）</div>
+      </div>
       <div class="ph-eyebrow"><span class="ph-dot" style="background:var(--blue);box-shadow:0 0 8px var(--blue)"></span>Case 02 ／ Warrant Pricing — Black-Scholes</div>
       <h2 class="ph-title">059427 SGBR2X國泰5A購01<br>理論價格與Delta評估</h2>
       <p class="ph-sub">標的：00715L 期街口布蘭特原油正2 ETF ｜ 到期日：2026/10/12 ｜ 行使比例：0.07</p>
@@ -596,6 +662,19 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
           <div class="vtext">理論價格 <strong id="v-tp" style="color:var(--gold)">—</strong> 元，Delta <strong id="v-delta" style="color:var(--gold)">—</strong>，與市場高度吻合</div>
           <div class="vsub" id="v-sub">BIV 275.7%・台灣1Y公債1.75%・歐式近似美式</div>
         </div>
+      </div>
+
+      <!-- 股價走勢 + 理論價格疊加 -->
+      <div class="spark-wrap">
+        <div class="spark-header">
+          <div class="spark-title">00715L 股價走勢 × B-S 理論價格</div>
+          <div class="spark-legend">
+            <div class="spark-leg-item"><div class="spark-leg-dot" style="background:var(--gold)"></div>00715L 股價（左軸）</div>
+            <div class="spark-leg-item"><div class="spark-leg-dot" style="background:var(--blue)"></div>B-S 理論價格（右軸）</div>
+          </div>
+        </div>
+        <div class="spark-sub" id="spark-sub">資料載入後顯示歷史走勢；隨 GitHub Actions 每日累積更多資料點</div>
+        <div class="spark-chart"><canvas id="sparkChart"></canvas></div>
       </div>
 
       <!-- 模型 vs 市場 -->
@@ -833,7 +912,7 @@ async function loadData(){
     document.querySelectorAll('[id$="-updated"]').forEach(el=>{
       el.textContent='最後更新：'+lu;
     });
-    runCB(); runWarrant(); updateCalc();
+    runCB(); runWarrant(); updateCalc(); buildSparkline();
   }catch(e){
     document.querySelectorAll('[id$="-status"]').forEach(el=>{
       if(el.id==='p1-status'||el.id==='p2-status'){
@@ -988,7 +1067,7 @@ function updateCalc(){
 
 ['in-S','in-sig','in-T','in-r','in-K','in-n'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateCalc));
 document.getElementById('p1-date')?.addEventListener('change',runCB);
-document.getElementById('p2-date')?.addEventListener('change',runWarrant);
+document.getElementById('p2-date')?.addEventListener('change',()=>{runWarrant();buildSparkline();});
 
 // ── STATIC CHARTS ──
 const co={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
@@ -1019,6 +1098,65 @@ new Chart(document.getElementById('wc3'),{type:'line',data:{labels:days.map(d=>d
 
 // 啟動
 loadData();
+let sparkChart=null;
+function buildSparkline(){
+  if(!stockData?.prices?.['00715L']) return;
+  const prices=stockData.prices['00715L'];
+  const dates=Object.keys(prices).sort();
+  if(dates.length<2){
+    const sub=document.getElementById('spark-sub');
+    if(sub) sub.textContent=`目前僅有 ${dates.length} 筆資料（${dates[0]}），走勢圖將隨資料累積逐步完整`;
+    return;
+  }
+
+  const K=66,r=0.0175,n=0.07;
+  const sig=(parseFloat(document.getElementById('in-sig')?.value)||275.7)/100;
+
+  const sVals=dates.map(d=>prices[d]);
+  const tpVals=dates.map(d=>{
+    const T=dateDiff(d,EXPIRY)/365;
+    if(T<=0) return 0;
+    const S=prices[d];
+    return bsCalc(S,K,T,r,sig,n).tp;
+  });
+
+  const sub=document.getElementById('spark-sub');
+  if(sub) sub.textContent=`${dates[0]} 至 ${dates[dates.length-1]}，共 ${dates.length} 個交易日`;
+
+  const coSpark={
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        callbacks:{
+          label:(c)=>{
+            if(c.datasetIndex===0) return ` 00715L：${c.parsed.y.toFixed(2)} 元`;
+            return ` 理論價格：${c.parsed.y.toFixed(4)} 元`;
+          }
+        }
+      }
+    },
+    scales:{
+      x:{grid:{color:'#1e2330'},ticks:{color:'#7a8aa8',font:{size:10,family:'IBM Plex Mono'}},maxTicksLimit:8},
+      yS:{position:'left',grid:{color:'#1e2330'},ticks:{color:'#f5c842',font:{size:10,family:'IBM Plex Mono'}},title:{display:true,text:'股價（元）',color:'#f5c842',font:{size:10}}},
+      yTP:{position:'right',grid:{display:false},ticks:{color:'#4f8ef7',font:{size:10,family:'IBM Plex Mono'}},title:{display:true,text:'理論價（元）',color:'#4f8ef7',font:{size:10}}}
+    }
+  };
+
+  if(sparkChart){ sparkChart.destroy(); sparkChart=null; }
+  sparkChart=new Chart(document.getElementById('sparkChart'),{
+    type:'line',
+    data:{
+      labels:dates.map(d=>d.slice(5)),
+      datasets:[
+        {label:'00715L股價',data:sVals,yAxisID:'yS',borderColor:'#f5c842',borderWidth:2,pointRadius:3,pointBackgroundColor:'#f5c842',fill:true,backgroundColor:'rgba(245,200,66,.06)',tension:.3},
+        {label:'B-S理論價格',data:tpVals,yAxisID:'yTP',borderColor:'#4f8ef7',borderWidth:2,pointRadius:3,pointBackgroundColor:'#4f8ef7',borderDash:[4,3],fill:false,tension:.3}
+      ]
+    },
+    options:coSpark
+  });
+}
 </script>
 </body>
 </html>
