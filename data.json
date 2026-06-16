@@ -1,6 +1,6 @@
 {
   "last_updated": "2026-06-16",
-  "note": "Auto-updated daily via GitHub Actions.",
+  "note": "Auto-updated daily via GitHub Actions. 059427 manual.",
   "prices": {
     "00715L": {
       "2026-06-08": 57.10,
@@ -32,6 +32,7 @@
   },
   "volatility": {
     "2026-06-08": 275.70,
-    "2026-06-09": 277.15
+    "2026-06-09": 277.15,
+    "2026-06-16": 94.15
   }
 }
