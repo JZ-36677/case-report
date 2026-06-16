@@ -665,16 +665,59 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
       </div>
 
       <!-- 股價走勢 + 理論價格疊加 -->
-      <div class="spark-wrap">
-        <div class="spark-header">
-          <div class="spark-title">00715L 股價走勢 × B-S 理論價格</div>
-          <div class="spark-legend">
-            <div class="spark-leg-item"><div class="spark-leg-dot" style="background:var(--gold)"></div>00715L 股價（左軸）</div>
-            <div class="spark-leg-item"><div class="spark-leg-dot" style="background:var(--blue)"></div>B-S 理論價格（右軸）</div>
+      <!-- Bloomberg 風格雙圖 -->
+      <div style="background:var(--s1);border:1px solid var(--border2);border-radius:12px;padding:22px;margin-bottom:24px;">
+
+        <!-- KPI 列 -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;" id="spark-kpi-row">
+          <div style="background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">B-S 理論價</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:600;color:var(--blue)" id="kpi-spark-tp">—</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:3px;font-family:var(--mono)">元 / 單位</div>
+          </div>
+          <div style="background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">059427 市場價</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:600;color:var(--green)" id="kpi-spark-mp">—</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:3px;font-family:var(--mono)">元 / 單位</div>
+          </div>
+          <div style="background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">定價誤差</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:600;" id="kpi-spark-err">—</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:3px;font-family:var(--mono)">理論 vs 市場</div>
+          </div>
+          <div style="background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;box-shadow:0 2px 8px rgba(0,0,0,.3);">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">00715L 最新</div>
+            <div style="font-family:var(--mono);font-size:22px;font-weight:600;color:var(--gold)" id="kpi-spark-etf">—</div>
+            <div style="font-size:10px;color:var(--dim);margin-top:3px;font-family:var(--mono)">元 收盤</div>
           </div>
         </div>
-        <div class="spark-sub" id="spark-sub">資料載入後顯示歷史走勢；隨 GitHub Actions 每日累積更多資料點</div>
-        <div class="spark-chart"><canvas id="sparkChart"></canvas></div>
+
+        <!-- 圖1：B-S 理論價 vs 059427 市場實際價 -->
+        <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:13px;font-weight:600;">B-S 理論價格 vs 059427 市場實際價</div>
+          <div style="display:flex;gap:14px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);">
+              <svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="#4f8ef7" stroke-width="2" stroke-dasharray="4,3"/></svg>B-S 理論價
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);">
+              <div style="width:22px;height:2px;background:#2dd4a0;border-radius:1px;"></div>059427 市場價
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--dim);margin-bottom:14px;" id="spark-sub">資料載入後顯示</div>
+        <div style="position:relative;height:200px;"><canvas id="sparkChart"></canvas></div>
+
+        <!-- 分隔線 -->
+        <div style="height:1px;background:var(--border);margin:22px 0;"></div>
+
+        <!-- 圖2：00715L ETF 收盤價 -->
+        <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:13px;font-weight:600;">00715L 期街口布蘭特原油正2 ETF 收盤價</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);">
+            <div style="width:22px;height:2px;background:#f5c842;border-radius:1px;"></div>收盤價（元）
+          </div>
+        </div>
+        <div style="position:relative;height:160px;"><canvas id="sparkChart2"></canvas></div>
       </div>
 
       <!-- 模型 vs 市場 -->
@@ -1114,161 +1157,193 @@ function initDates(){
 }
 initDates();
 loadData();
-let sparkChart=null;
+let sparkChart=null, sparkChart2=null;
 function buildSparkline(){
-  if(!stockData?.prices?.['00715L']) return;
-  const prices=stockData.prices['00715L'];
+  const prices=stockData?.prices?.['00715L'];
+  const wPrices=stockData?.prices?.['059427']||{};
+  if(!prices) return;
   const dates=Object.keys(prices).sort();
-  if(dates.length<2){
-    const sub=document.getElementById('spark-sub');
-    if(sub) sub.textContent=`目前僅有 ${dates.length} 筆資料（${dates[0]}），走勢圖將隨資料累積逐步完整`;
-    return;
-  }
+  if(dates.length<1) return;
 
   const K=66,r=0.0175,n=0.07;
   const sig=(parseFloat(document.getElementById('in-sig')?.value)||275.7)/100;
 
-  const sVals=dates.map(d=>prices[d]);
+  // 計算各日 B-S 理論價
   const tpVals=dates.map(d=>{
     const T=dateDiff(d,EXPIRY)/365;
     if(T<=0) return null;
-    const S=prices[d];
-    return bsCalc(S,K,T,r,sig,n).tp;
+    return bsCalc(prices[d],K,T,r,sig,n).tp;
   });
 
-  // 實際市場權證價（059427）
-  const wPrices=stockData.prices?.['059427']||{};
-  const wVals=dates.map(d=>{
-    if(wPrices[d]===undefined||wPrices[d]===0) return null;
-    return wPrices[d];
-  });
-  const hasWarrantData=wVals.some(v=>v!==null);
+  // 059427 市場價
+  const wVals=dates.map(d=>wPrices[d]||null);
+
+  // ETF 收盤價
+  const sVals=dates.map(d=>prices[d]);
+
+  // 更新 KPI
+  const lastIdx=dates.length-1;
+  const lastTP=tpVals[lastIdx], lastMP=wVals[lastIdx], lastS=sVals[lastIdx];
+  const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  setEl('kpi-spark-tp', lastTP?lastTP.toFixed(4)+'元':'—');
+  setEl('kpi-spark-mp', lastMP?lastMP.toFixed(2)+'元':'—');
+  setEl('kpi-spark-etf', lastS?lastS.toFixed(2)+'元':'—');
+  if(lastTP&&lastMP){
+    const err=((lastTP-lastMP)/lastMP*100);
+    const errEl=document.getElementById('kpi-spark-err');
+    if(errEl){
+      errEl.textContent=(err>=0?'+':'')+err.toFixed(2)+'%';
+      errEl.style.color=Math.abs(err)<5?'var(--green)':Math.abs(err)<10?'var(--gold)':'var(--red)';
+    }
+  }
 
   const sub=document.getElementById('spark-sub');
-  if(sub) sub.textContent=`${dates[0]} 至 ${dates[dates.length-1]}，共 ${dates.length} 個交易日`;
+  if(sub) sub.textContent=`${dates[0]} 至 ${dates[lastIdx]}，共 ${dates.length} 個交易日`;
 
-  // 更新圖例說明
-  const sparkTitle=document.querySelector('.spark-title');
-  if(sparkTitle) sparkTitle.textContent='00715L股價 × B-S理論價格 × 059427市場實際價';
-
-  const sparkLeg=document.querySelector('.spark-legend');
-  if(sparkLeg) sparkLeg.innerHTML=`
-    <div class="spark-leg-item"><div class="spark-leg-dot" style="background:#f5c842"></div>00715L 股價（左軸）</div>
-    <div class="spark-leg-item"><div class="spark-leg-dot" style="background:#4f8ef7;border-top:2px dashed #4f8ef7;background:none;height:0"></div>B-S 理論價（右軸）</div>
-    ${hasWarrantData?'<div class="spark-leg-item"><div class="spark-leg-dot" style="background:#2dd4a0"></div>059427 市場價（右軸）</div>':''}
-  `;
-
-  const coSpark={
-    responsive:true,maintainAspectRatio:false,
+  const labels=dates.map(d=>d.slice(5));
+  const baseOpts={
+    responsive:true, maintainAspectRatio:false,
     interaction:{mode:'index',intersect:false},
-    plugins:{
-      legend:{
-        display:true,
-        position:'top',
-        align:'end',
-        labels:{
-          color:'#7a8aa8',
-          font:{size:11,family:'Noto Sans TC'},
-          boxWidth:14,boxHeight:3,padding:16,
-          usePointStyle:true,pointStyle:'line',
-          filter:(item)=>item.text!==''
-        }
-      },
-      tooltip:{
-        backgroundColor:'rgba(17,19,24,.95)',
-        borderColor:'rgba(255,255,255,.12)',
-        borderWidth:1,
-        titleColor:'#dde1ec',
-        bodyColor:'#7a8aa8',
-        padding:12,
-        callbacks:{
-          label:(c)=>{
-            if(c.datasetIndex===0) return ` 00715L 股價：${c.parsed.y?.toFixed(2)} 元`;
-            if(c.datasetIndex===1) return ` B-S 理論價：${c.parsed.y?.toFixed(4)} 元`;
-            return ` 059427 市場價：${c.parsed.y?.toFixed(2)} 元`;
-          }
-        }
-      }
-    },
+    plugins:{legend:{display:false}},
     scales:{
-      x:{
-        grid:{color:'rgba(255,255,255,.04)'},
-        ticks:{color:'#7a8aa8',font:{size:10,family:'IBM Plex Mono'}},
-        maxTicksLimit:10
-      },
-      yS:{
-        position:'left',
-        grid:{color:'rgba(255,255,255,.04)'},
-        ticks:{color:'#f5c842',font:{size:10,family:'IBM Plex Mono'},maxTicksLimit:6},
-        title:{display:false}
-      },
-      yTP:{
-        position:'right',
-        grid:{display:false},
-        ticks:{color:'#4f8ef7',font:{size:10,family:'IBM Plex Mono'},maxTicksLimit:6},
-        title:{display:false}
-      }
+      x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a8aa8',font:{size:10,family:'IBM Plex Mono'}}},
+      y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#7a8aa8',font:{size:10,family:'IBM Plex Mono'},maxTicksLimit:5}}
     }
   };
 
-  const datasets=[
-    {
-      label:'00715L 股價（左軸）',
-      data:sVals,
-      yAxisID:'yS',
-      borderColor:'#f5c842',
-      borderWidth:2.5,
-      pointRadius:5,
-      pointHoverRadius:8,
-      pointBackgroundColor:'#f5c842',
-      pointBorderColor:'#111318',
-      pointBorderWidth:2,
-      fill:true,
-      backgroundColor:'rgba(245,200,66,.07)',
-      tension:.35,
-      spanGaps:true
-    },
-    {
-      label:'B-S 理論價格（右軸）',
-      data:tpVals,
-      yAxisID:'yTP',
-      borderColor:'#4f8ef7',
-      borderWidth:2,
-      borderDash:[5,4],
-      pointRadius:5,
-      pointHoverRadius:8,
-      pointBackgroundColor:'#4f8ef7',
-      pointBorderColor:'#111318',
-      pointBorderWidth:2,
-      fill:false,
-      tension:.35,
-      spanGaps:true
-    }
-  ];
+  // ── 圖1：B-S 理論價 vs 059427 市場價 ──
+  const ctx1=document.getElementById('sparkChart');
+  if(!ctx1) return;
+  const g1=ctx1.getContext('2d');
+  const blueGrad=g1.createLinearGradient(0,0,0,200);
+  blueGrad.addColorStop(0,'rgba(79,142,247,0.25)');
+  blueGrad.addColorStop(1,'rgba(79,142,247,0)');
+  const greenGrad=g1.createLinearGradient(0,0,0,200);
+  greenGrad.addColorStop(0,'rgba(45,212,160,0.2)');
+  greenGrad.addColorStop(1,'rgba(45,212,160,0)');
 
-  if(hasWarrantData){
-    datasets.push({
-      label:'059427 市場實際價（右軸）',
-      data:wVals,
-      yAxisID:'yTP',
-      borderColor:'#2dd4a0',
-      borderWidth:2,
-      pointRadius:5,
-      pointHoverRadius:8,
-      pointBackgroundColor:'#2dd4a0',
-      pointBorderColor:'#111318',
-      pointBorderWidth:2,
-      fill:false,
-      tension:.35,
-      spanGaps:true
-    });
-  }
-
-  if(sparkChart){ sparkChart.destroy(); sparkChart=null; }
-  sparkChart=new Chart(document.getElementById('sparkChart'),{
+  if(sparkChart){sparkChart.destroy();sparkChart=null;}
+  sparkChart=new Chart(ctx1,{
     type:'line',
-    data:{labels:dates.map(d=>d.slice(5)),datasets},
-    options:coSpark
+    data:{
+      labels,
+      datasets:[
+        {
+          label:'B-S 理論價',
+          data:tpVals,
+          borderColor:'#4f8ef7',
+          borderWidth:2,
+          borderDash:[5,4],
+          backgroundColor:blueGrad,
+          fill:true,
+          pointRadius:5,
+          pointHoverRadius:8,
+          pointBackgroundColor:'#4f8ef7',
+          pointBorderColor:'#111318',
+          pointBorderWidth:2,
+          tension:.35,
+          spanGaps:true
+        },
+        {
+          label:'059427 市場價',
+          data:wVals,
+          borderColor:'#2dd4a0',
+          borderWidth:2,
+          backgroundColor:greenGrad,
+          fill:true,
+          pointRadius:5,
+          pointHoverRadius:8,
+          pointBackgroundColor:'#2dd4a0',
+          pointBorderColor:'#111318',
+          pointBorderWidth:2,
+          tension:.35,
+          spanGaps:true
+        }
+      ]
+    },
+    options:{
+      ...baseOpts,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(15,18,25,.95)',
+          borderColor:'rgba(255,255,255,.12)',
+          borderWidth:1,
+          titleColor:'#dde1ec',
+          bodyColor:'#7a8aa8',
+          padding:14,
+          titleFont:{family:'IBM Plex Mono',size:12},
+          bodyFont:{family:'IBM Plex Mono',size:12},
+          callbacks:{
+            title:(items)=>'日期：'+dates[items[0].dataIndex].replace(/-/g,'/'),
+            label:(item)=>{
+              const v=item.parsed.y;
+              if(v===null) return null;
+              return (item.datasetIndex===0?'理論價：':'市場價：')+v.toFixed(4)+' 元';
+            },
+            afterBody:(items)=>{
+              const i=items[0].dataIndex;
+              const tp=tpVals[i], mp=wVals[i];
+              if(tp&&mp){
+                const err=((tp-mp)/mp*100);
+                return ['誤 差：'+(err>=0?'+':'')+err.toFixed(2)+'%'];
+              }
+              return [];
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ── 圖2：00715L ETF 收盤價 ──
+  const ctx2=document.getElementById('sparkChart2');
+  if(!ctx2) return;
+  const g2=ctx2.getContext('2d');
+  const goldGrad=g2.createLinearGradient(0,0,0,160);
+  goldGrad.addColorStop(0,'rgba(245,200,66,0.25)');
+  goldGrad.addColorStop(1,'rgba(245,200,66,0)');
+
+  if(sparkChart2){sparkChart2.destroy();sparkChart2=null;}
+  sparkChart2=new Chart(ctx2,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        label:'00715L 收盤',
+        data:sVals,
+        borderColor:'#f5c842',
+        borderWidth:2.5,
+        backgroundColor:goldGrad,
+        fill:true,
+        pointRadius:5,
+        pointHoverRadius:8,
+        pointBackgroundColor:'#f5c842',
+        pointBorderColor:'#111318',
+        pointBorderWidth:2,
+        tension:.35
+      }]
+    },
+    options:{
+      ...baseOpts,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(15,18,25,.95)',
+          borderColor:'rgba(255,255,255,.12)',
+          borderWidth:1,
+          titleColor:'#dde1ec',
+          bodyColor:'#7a8aa8',
+          padding:14,
+          titleFont:{family:'IBM Plex Mono',size:12},
+          bodyFont:{family:'IBM Plex Mono',size:12},
+          callbacks:{
+            title:(items)=>'日期：'+dates[items[0].dataIndex].replace(/-/g,'/'),
+            label:(item)=>'收盤價：'+item.parsed.y.toFixed(2)+' 元'
+          }
+        }
+      }
+    }
   });
 }
 
