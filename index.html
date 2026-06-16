@@ -718,6 +718,33 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6);}
           </div>
         </div>
         <div style="position:relative;height:160px;"><canvas id="sparkChart2"></canvas></div>
+
+        <!-- 落差分析 -->
+        <div style="height:1px;background:var(--border);margin:22px 0;"></div>
+        <div id="gap-analysis" style="display:none;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+            <span style="color:var(--purple)">⚡</span> B-S 理論價 vs 市場價 落差分析
+          </div>
+
+          <!-- 每日誤差表 -->
+          <div style="overflow-x:auto;margin-bottom:20px;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono);">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border2);">
+                  <th style="padding:8px 10px;color:var(--muted);font-weight:400;text-align:left;letter-spacing:.08em;">日期</th>
+                  <th style="padding:8px 10px;color:var(--blue);font-weight:400;text-align:right;">B-S 理論價</th>
+                  <th style="padding:8px 10px;color:var(--green);font-weight:400;text-align:right;">市場實際價</th>
+                  <th style="padding:8px 10px;color:var(--muted);font-weight:400;text-align:right;">誤差</th>
+                  <th style="padding:8px 10px;color:var(--muted);font-weight:400;text-align:right;">方向</th>
+                </tr>
+              </thead>
+              <tbody id="gap-table-body"></tbody>
+            </table>
+          </div>
+
+          <!-- 原因解釋 -->
+          <div id="gap-reason-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+        </div>
       </div>
 
       <!-- 模型 vs 市場 -->
@@ -1345,6 +1372,77 @@ function buildSparkline(){
       }
     }
   });
+  // ── 落差分析 ──
+  const gapSection=document.getElementById('gap-analysis');
+  const gapBody=document.getElementById('gap-table-body');
+  const gapCards=document.getElementById('gap-reason-cards');
+
+  const pairsWithGap=dates.map((d,i)=>({
+    date:d, tp:tpVals[i], mp:wVals[i], s:sVals[i]
+  })).filter(r=>r.tp!==null&&r.mp!==null&&r.mp>0);
+
+  if(pairsWithGap.length>0&&gapSection&&gapBody&&gapCards){
+    gapSection.style.display='block';
+
+    // 表格
+    gapBody.innerHTML=pairsWithGap.map(r=>{
+      const err=(r.tp-r.mp)/r.mp*100;
+      const errColor=Math.abs(err)<5?'var(--green)':Math.abs(err)<10?'var(--gold)':'var(--red)';
+      const dir=err>0?'理論偏高':'理論偏低';
+      const dirColor=err>0?'var(--gold)':'var(--blue)';
+      return `<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:8px 10px;color:var(--muted);">${r.date}</td>
+        <td style="padding:8px 10px;text-align:right;color:var(--blue);">${r.tp.toFixed(4)}</td>
+        <td style="padding:8px 10px;text-align:right;color:var(--green);">${r.mp.toFixed(2)}</td>
+        <td style="padding:8px 10px;text-align:right;color:${errColor};">${(err>=0?'+':'')+err.toFixed(2)}%</td>
+        <td style="padding:8px 10px;text-align:right;color:${dirColor};font-size:11px;">${dir}</td>
+      </tr>`;
+    }).join('');
+
+    // 計算平均誤差
+    const avgErr=pairsWithGap.reduce((s,r)=>{
+      return s+(r.tp-r.mp)/r.mp*100;
+    },0)/pairsWithGap.length;
+
+    const absAvg=Math.abs(avgErr).toFixed(2);
+    const sysDir=avgErr>0?'偏高':'偏低';
+    const usedSig=(sig*100).toFixed(1);
+
+    // 原因卡片
+    const reasons=[
+      {
+        title: avgErr>0
+          ? `波動率假設可能偏高`
+          : `市場隱含波動率高於BIV`,
+        body: avgErr>0
+          ? `B-S 採用評價基準日 BIV ${usedSig}%，若之後市場隱含波動率下降，理論價會系統性高估市場價 ${absAvg}%。`
+          : `目前市場隱含波動率高於基準日 BIV ${usedSig}%，導致市場願意出更高的價格。`,
+        color:'var(--blue)'
+      },
+      {
+        title:'流動性折價',
+        body:'059427 日成交量極低（約 7-52 張），市場做市商加入買賣價差與流動性折價，使實際成交價偏低於理論價。',
+        color:'var(--gold)'
+      },
+      {
+        title:'美式 → 歐式近似誤差',
+        body:'B-S 以歐式模型近似美式權證。雖然標的不配息使誤差極小，但仍存在些微系統性偏差。',
+        color:'var(--muted)'
+      },
+      {
+        title:'波動率微笑效應',
+        body:'B-S 假設波動率恆定，但實際市場中深度價外選擇權（如本案 K=66 vs S≈42）具有更高的隱含波動率（波動率微笑），若採 Heston 模型可進一步縮小落差。',
+        color:'var(--purple)'
+      }
+    ];
+
+    gapCards.innerHTML=reasons.map(r=>`
+      <div style="background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:600;color:${r.color};margin-bottom:6px;">${r.title}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7;">${r.body}</div>
+      </div>`).join('');
+  }
+
 }
 
 </script>
