@@ -1096,7 +1096,23 @@ new Chart(document.getElementById('wc3'),{type:'line',data:{labels:days.map(d=>d
   {data:days.map(d=>bsCalc(BASE.S,BASE.K,d/365,BASE.r,BASE.sig,BASE.n).tp),borderColor:'#2dd4a0',borderWidth:2,pointRadius:0,fill:true,backgroundColor:'rgba(45,212,160,.06)',tension:.4}
 ]},options:{...co,plugins:{...co.plugins,tooltip:{callbacks:{label:c=>` ${c.parsed.y.toFixed(4)}元`}}}}});
 
-// 啟動
+// 啟動：先把日期設為今天，再載入資料
+function initDates(){
+  // 取台灣今天日期（UTC+8）
+  const now = new Date();
+  const twOffset = 8 * 60; // 台灣 UTC+8
+  const localOffset = now.getTimezoneOffset();
+  const tw = new Date(now.getTime() + (twOffset + localOffset) * 60000);
+  const today = tw.toISOString().slice(0, 10);
+
+  const d1 = document.getElementById('p1-date');
+  const d2 = document.getElementById('p2-date');
+
+  // 只在 today 比預設值新時才覆蓋
+  if(d1 && today > '2026-06-08') d1.value = today;
+  if(d2 && today > '2026-06-01' && today < '2026-10-12') d2.value = today;
+}
+initDates();
 loadData();
 let sparkChart=null;
 function buildSparkline(){
