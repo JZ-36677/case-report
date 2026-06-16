@@ -1,8 +1,3 @@
-"""
-每日自動抓取股價腳本
-使用 twstock 套件（台灣股市）
-00715L、2236 自動抓；059427 手動更新
-"""
 import json, os, numpy as np
 from datetime import date
 
@@ -11,18 +6,31 @@ DATA_FILE = "data.json"
 def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r", encoding="utf-8") as f:
-            try:
-                return json.load(f)
-            except json.JSONDecodeError as e:
-                print(f"⚠ data.json 格式錯誤：{e}")
-                print("⚠ 使用空白資料重新開始")
-    return {"last_updated":"","prices":{"00715L":{},"2236":{},"059427":{}},"volatility":{}}
+            content = f.read()
+        try:
+            data = json.loads(content)
+            # 確保所有必要欄位存在
+            if "prices" not in data:
+                data["prices"] = {}
+            for t in ["00715L","2236","059427"]:
+                if t not in data["prices"]:
+                    data["prices"][t] = {}
+            if "volatility" not in data:
+                data["volatility"] = {}
+            return data
+        except json.JSONDecodeError as e:
+            print(f"⚠ data.json 格式錯誤：{e}")
+            print("⚠ 請手動修復 data.json，腳本中止以防資料遺失")
+            raise SystemExit(1)  # 直接停止，不覆蓋
+    return {
+        "last_updated": "",
+        "prices": {"00715L":{},"2236":{},"059427":{}},
+        "volatility": {}
+    }
 
 def save_data(data):
-    """用標準 json.dump 確保格式正確"""
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"  ✓ data.json 已儲存")
 
 def fetch_twstock(stock_no, name):
     try:
@@ -56,9 +64,6 @@ def main():
     today = date.today().strftime("%Y-%m-%d")
     print(f"=== 股價更新 {today} ===\n")
     data = load_data()
-    for t in ["00715L","2236","059427"]:
-        if t not in data["prices"]:
-            data["prices"][t] = {}
     updated = False
 
     for name in ["00715L","2236"]:
@@ -72,16 +77,14 @@ def main():
                 print(f"  → {d} 已存在，跳過")
         print()
 
-    print("[059427] 權證，需手動更新 data.json\n")
+    print("[059427] 權證，請手動更新\n")
 
     print("[波動率]")
     hv = calc_hv("00715L", 30)
     if hv:
         data["volatility"][today] = hv
-        print(f"  ✓ HV(30日)：{hv:.2f}%")
+        print(f"  ✓ HV：{hv:.2f}%")
         updated = True
-    else:
-        print("  ⚠ 略過")
 
     data["last_updated"] = today
     save_data(data)
