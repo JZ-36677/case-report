@@ -899,7 +899,7 @@ fillBase();
 // ── LOAD DATA.JSON ──
 async function loadData(){
   try{
-    const res=await fetch('./data.json');
+    const res=await fetch('./data.json?_='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     stockData=await res.json();
     const lu=stockData.last_updated||'未知';
