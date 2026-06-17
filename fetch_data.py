@@ -1,36 +1,41 @@
-import json, os, numpy as np
+import json, os, re, numpy as np
 from datetime import date
 
 DATA_FILE = "data.json"
 
 def load_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
-            content = f.read()
-        try:
-            data = json.loads(content)
-            # 確保所有必要欄位存在
-            if "prices" not in data:
-                data["prices"] = {}
-            for t in ["00715L","2236","059427"]:
-                if t not in data["prices"]:
-                    data["prices"][t] = {}
-            if "volatility" not in data:
-                data["volatility"] = {}
-            return data
-        except json.JSONDecodeError as e:
-            print(f"⚠ data.json 格式錯誤：{e}")
-            print("⚠ 請手動修復 data.json，腳本中止以防資料遺失")
-            raise SystemExit(1)  # 直接停止，不覆蓋
-    return {
-        "last_updated": "",
-        "prices": {"00715L":{},"2236":{},"059427":{}},
-        "volatility": {}
-    }
+    if not os.path.exists(DATA_FILE):
+        return {"last_updated":"","prices":{"00715L":{},"2236":{},"059427":{}},"volatility":{}}
+
+    with open(DATA_FILE, "r", encoding="utf-8-sig") as f:
+        content = f.read().strip()
+
+    # 移除 BOM
+    if content.startswith('\ufeff'):
+        content = content[1:]
+
+    # 嘗試直接解析
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError as e:
+        print(f"⚠ JSON 解析失敗：{e}")
+        print("⚠ 嘗試自動修復尾巴逗號...")
+
+    # 自動修復：移除 } ] 前的多餘逗號
+    fixed = re.sub(r',(\s*[}\]])', r'\1', content)
+    try:
+        data = json.loads(fixed)
+        print("✓ 自動修復成功，繼續執行")
+        return data
+    except json.JSONDecodeError as e2:
+        print(f"✗ 無法自動修復：{e2}")
+        print("✗ 腳本中止，保護現有資料")
+        raise SystemExit(1)
 
 def save_data(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+    with open(DATA_FILE, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    print("  ✓ data.json 已儲存")
 
 def fetch_twstock(stock_no, name):
     try:
@@ -57,13 +62,16 @@ def calc_hv(stock_no, days=30):
         recent = lr[-min(days, len(lr)):]
         avg = sum(recent)/len(recent)
         variance = sum((x-avg)**2 for x in recent)/len(recent)
-        return round(sqrt(variance) * sqrt(252) * 100, 2)
+        return round((variance**0.5) * (252**0.5) * 100, 2)
     except: return None
 
 def main():
     today = date.today().strftime("%Y-%m-%d")
     print(f"=== 股價更新 {today} ===\n")
     data = load_data()
+    for t in ["00715L","2236","059427"]:
+        if t not in data.get("prices",{}):
+            data.setdefault("prices",{})[t] = {}
     updated = False
 
     for name in ["00715L","2236"]:
@@ -77,14 +85,13 @@ def main():
                 print(f"  → {d} 已存在，跳過")
         print()
 
-    print("[059427] 權證，請手動更新\n")
+    print("[059427] 權證需手動更新\n")
 
     print("[波動率]")
     hv = calc_hv("00715L", 30)
     if hv:
         data["volatility"][today] = hv
-        print(f"  ✓ HV：{hv:.2f}%")
-        updated = True
+        print(f"  ✓ HV：{hv:.2f}%"); updated = True
 
     data["last_updated"] = today
     save_data(data)
