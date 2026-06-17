@@ -135,15 +135,20 @@ def fetch_twse_api(stock_no, name):
             raw = json.loads(r.read().decode("utf-8"))
         if raw.get("stat") != "OK" or not raw.get("data"):
             print(f"  ⚠ TWSE API 無資料：{name}"); return None, None
-        last = raw["data"][-1]
-        # [民國日期, 成交量, 成交額, 開盤, 最高, 最低, 收盤, 漲跌, 筆數]
-        tw_date = last[0].strip()
-        close_str = last[6].strip().replace(",", "")
-        parts = tw_date.split("/")
-        trade_date = f"{int(parts[0])+1911:04d}-{int(parts[1]):02d}-{int(parts[2]):02d}"
-        close = round(float(close_str), 2)
-        print(f"  ✓ {name}：{close:.2f} 元（{trade_date}）[TWSE API]")
-        return close, trade_date
+
+        # 從最後往前找第一筆有效收盤價（非 '--'）
+        for last in reversed(raw["data"]):
+            close_str = last[6].strip().replace(",", "")
+            if close_str == "--" or not close_str:
+                continue
+            tw_date = last[0].strip()
+            parts = tw_date.split("/")
+            trade_date = f"{int(parts[0])+1911:04d}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+            close = round(float(close_str), 2)
+            print(f"  ✓ {name}：{close:.2f} 元（{trade_date}）[TWSE API]")
+            return close, trade_date
+
+        print(f"  ⚠ {name} 本月無有效收盤價"); return None, None
     except Exception as e:
         print(f"  ✗ TWSE API 失敗 {name}：{e}"); return None, None
 
