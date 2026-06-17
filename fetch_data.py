@@ -166,7 +166,7 @@ def main():
     updated = False
 
     # 抓股票
-    for name in ["00715L","2236"]:
+    for name in ["00715L","2236","059427"]:
         print(f"[{name}]")
         p, d = fetch_twstock(name, name)
         if p and d:
@@ -176,8 +176,6 @@ def main():
             else:
                 print(f"  → {d} 已存在，跳過")
         print()
-
-    print("[059427] 權證需手動更新\n")
 
     # 自動算 BIV（從 059427 市場價反推）
     print("[BIV 自動計算]")
