@@ -113,14 +113,39 @@ def fetch_twstock(stock_no, name):
     try:
         import twstock
         stock = twstock.Stock(stock_no)
-        if not stock.price or not stock.date:
-            print(f"  ⚠ 無資料：{name}"); return None, None
+        if not stock.price or stock.price[-1] is None:
+            print(f"  ⚠ twstock 無價格：{name}"); return None, None
         price = round(float(stock.price[-1]), 2)
         trade_date = stock.date[-1].strftime("%Y-%m-%d")
         print(f"  ✓ {name}：{price:.2f} 元（{trade_date}）")
         return price, trade_date
     except Exception as e:
         print(f"  ✗ 失敗 {name}：{e}"); return None, None
+
+def fetch_twse_api(stock_no, name):
+    """直接用 TWSE 歷史資料 API（適合權證）"""
+    import urllib.request
+    from datetime import date as d_
+    date_param = d_.today().strftime("%Y%m%d")
+    url = (f"https://www.twse.com.tw/exchangeReport/STOCK_DAY"
+           f"?response=json&date={date_param}&stockNo={stock_no}")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            raw = json.loads(r.read().decode("utf-8"))
+        if raw.get("stat") != "OK" or not raw.get("data"):
+            print(f"  ⚠ TWSE API 無資料：{name}"); return None, None
+        last = raw["data"][-1]
+        # [民國日期, 成交量, 成交額, 開盤, 最高, 最低, 收盤, 漲跌, 筆數]
+        tw_date = last[0].strip()
+        close_str = last[6].strip().replace(",", "")
+        parts = tw_date.split("/")
+        trade_date = f"{int(parts[0])+1911:04d}-{int(parts[1]):02d}-{int(parts[2]):02d}"
+        close = round(float(close_str), 2)
+        print(f"  ✓ {name}：{close:.2f} 元（{trade_date}）[TWSE API]")
+        return close, trade_date
+    except Exception as e:
+        print(f"  ✗ TWSE API 失敗 {name}：{e}"); return None, None
 
 # ── 自動計算 BIV ──
 def auto_calc_biv(data):
@@ -166,7 +191,7 @@ def main():
     updated = False
 
     # 抓股票
-    for name in ["00715L","2236","059427"]:
+    for name in ["00715L","2236"]:
         print(f"[{name}]")
         p, d = fetch_twstock(name, name)
         if p and d:
@@ -176,6 +201,17 @@ def main():
             else:
                 print(f"  → {d} 已存在，跳過")
         print()
+
+    # 059427 用 TWSE API（twstock 不支援權證價格）
+    print("[059427]")
+    p, d = fetch_twse_api("059427", "059427")
+    if p and d:
+        if d not in data["prices"]["059427"]:
+            data["prices"]["059427"][d] = p
+            print(f"  → 新增 {d}"); updated = True
+        else:
+            print(f"  → {d} 已存在，跳過")
+    print()
 
     # 自動算 BIV（從 059427 市場價反推）
     print("[BIV 自動計算]")
