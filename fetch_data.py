@@ -1,9 +1,10 @@
 import json, os, re, copy
-from datetime import date
+from datetime import date, datetime
+from math import log, sqrt, exp
 
 DATA_FILE = "data.json"
 
-# 備用種子資料（確保歷史資料不會遺失）
+# ── 備用種子資料 ──
 SEED = {
     "last_updated": "",
     "note": "Auto-updated daily via GitHub Actions.",
@@ -33,37 +34,71 @@ SEED = {
     }
 }
 
+# ── B-S 工具 ──
+def norm_cdf(x):
+    a = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429]
+    p = 0.3275911
+    s = 1 if x >= 0 else -1
+    t = 1 / (1 + p * abs(x) / sqrt(2))
+    y = 1 - (((((a[4]*t + a[3])*t + a[2])*t + a[1])*t + a[0])*t) * exp(-(x**2)/2) / sqrt(2*3.14159265358979)
+    return (1 + s * (2*y - 1)) / 2
+
+def bs_price(S, K, T, r, sig, n):
+    if sig <= 0 or T <= 0:
+        return 0.0
+    d1 = (log(S/K) + (r + sig**2/2)*T) / (sig*sqrt(T))
+    d2 = d1 - sig*sqrt(T)
+    call = S*norm_cdf(d1) - K*exp(-r*T)*norm_cdf(d2)
+    return call * n
+
+def calc_biv(S, K, T, r, n, market_price, tol=1e-6):
+    """二分法從市場價格反推 BIV"""
+    if S <= 0 or K <= 0 or T <= 0 or market_price <= 0:
+        return None
+    intrinsic = max(S - K, 0) * n
+    if market_price <= intrinsic:
+        return None
+
+    low, high = 0.001, 30.0  # 0.1% ~ 3000%
+    for _ in range(200):
+        mid = (low + high) / 2
+        p = bs_price(S, K, T, r, mid, n)
+        diff = p - market_price
+        if abs(diff) < tol:
+            break
+        if diff < 0:
+            low = mid
+        else:
+            high = mid
+    return round(mid * 100, 2)
+
+def date_diff_years(date_str, expiry="2026-10-12"):
+    d1 = datetime.strptime(date_str, "%Y-%m-%d")
+    d2 = datetime.strptime(expiry, "%Y-%m-%d")
+    return (d2 - d1).days / 365
+
+# ── 資料讀寫 ──
 def load_data():
     if not os.path.exists(DATA_FILE):
         print("  ℹ data.json 不存在，使用種子資料")
         return copy.deepcopy(SEED)
-
     try:
         raw = open(DATA_FILE, 'rb').read()
-        # 移除 BOM，統一換行
         if raw.startswith(b'\xef\xbb\xbf'):
             raw = raw[3:]
         content = raw.decode('utf-8', errors='ignore').replace('\r\n','\n').replace('\r','\n')
-
-        # 嘗試直接解析
         try:
             return json.loads(content)
         except json.JSONDecodeError:
-            pass
-
-        # 修復：移除尾巴逗號
-        fixed = re.sub(r',(\s*[}\]])', r'\1', content)
-        try:
-            data = json.loads(fixed)
-            print("  ✓ JSON 自動修復成功")
-            return data
-        except json.JSONDecodeError:
-            pass
-
-        # 最後備案：合併種子資料（保留能解析的部分）
-        print("  ⚠ JSON 無法修復，使用種子資料繼續執行（歷史資料已從備份還原）")
+            fixed = re.sub(r',(\s*[}\]])', r'\1', content)
+            try:
+                data = json.loads(fixed)
+                print("  ✓ JSON 自動修復成功")
+                return data
+            except:
+                pass
+        print("  ⚠ JSON 無法修復，使用種子資料（歷史資料已還原）")
         return copy.deepcopy(SEED)
-
     except Exception as e:
         print(f"  ⚠ 讀取失敗：{e}，使用種子資料")
         return copy.deepcopy(SEED)
@@ -73,6 +108,7 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
     print("  ✓ data.json 已儲存")
 
+# ── 股價抓取 ──
 def fetch_twstock(stock_no, name):
     try:
         import twstock
@@ -86,20 +122,39 @@ def fetch_twstock(stock_no, name):
     except Exception as e:
         print(f"  ✗ 失敗 {name}：{e}"); return None, None
 
-def calc_hv(stock_no, days=30):
-    try:
-        import twstock
-        from math import log, sqrt
-        stock = twstock.Stock(stock_no)
-        prices = stock.price
-        if len(prices) < 10: return None
-        closes = prices[-min(60, len(prices)):]
-        lr = [log(closes[i]/closes[i-1]) for i in range(1, len(closes))]
-        recent = lr[-min(days, len(lr)):]
-        avg = sum(recent)/len(recent)
-        variance = sum((x-avg)**2 for x in recent)/len(recent)
-        return round((variance**0.5) * (252**0.5) * 100, 2)
-    except: return None
+# ── 自動計算 BIV ──
+def auto_calc_biv(data):
+    """對每個有 059427 市場價和 00715L 股價的日期自動算 BIV"""
+    K, r, n = 66, 0.0175, 0.07
+    prices_715 = data["prices"].get("00715L", {})
+    prices_wt  = data["prices"].get("059427", {})
+
+    if "volatility" not in data:
+        data["volatility"] = {}
+
+    updated = 0
+    for d in sorted(prices_wt.keys()):
+        if d not in prices_715:
+            continue
+        S  = prices_715[d]
+        mp = prices_wt[d]
+        T  = date_diff_years(d)
+
+        if T <= 0 or mp <= 0:
+            continue
+
+        biv = calc_biv(S, K, T, r, n, mp)
+        if biv and biv > 0:
+            old = data["volatility"].get(d)
+            data["volatility"][d] = biv
+            if old != biv:
+                print(f"  BIV {d}：{biv:.2f}% （S={S}, 市場價={mp}）")
+                updated += 1
+
+    if updated:
+        print(f"  ✓ 共更新 {updated} 筆 BIV")
+    else:
+        print("  → 所有日期 BIV 已是最新")
 
 def main():
     today = date.today().strftime("%Y-%m-%d")
@@ -107,8 +162,10 @@ def main():
     data = load_data()
     for t in ["00715L","2236","059427"]:
         data["prices"].setdefault(t, {})
+    data.setdefault("volatility", {})
     updated = False
 
+    # 抓股票
     for name in ["00715L","2236"]:
         print(f"[{name}]")
         p, d = fetch_twstock(name, name)
@@ -122,15 +179,15 @@ def main():
 
     print("[059427] 權證需手動更新\n")
 
-    print("[波動率]")
-    hv = calc_hv("00715L", 30)
-    if hv:
-        data["volatility"][today] = hv
-        print(f"  ✓ HV：{hv:.2f}%"); updated = True
+    # 自動算 BIV（從 059427 市場價反推）
+    print("[BIV 自動計算]")
+    auto_calc_biv(data)
+    updated = True
+    print()
 
     data["last_updated"] = today
     save_data(data)
-    print(f"\n{'✅ 完成' if updated else '⚠ 無新資料'}")
+    print(f"\n✅ 完成")
 
 if __name__ == "__main__":
     main()
