@@ -105,7 +105,7 @@ def load_data():
 
 def save_data(data):
     with open(DATA_FILE, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        json.dump(data, f, ensure_ascii=False, indent=2, sort_keys=True)
     print("  ✓ data.json 已儲存")
 
 # ── 股價抓取 ──
