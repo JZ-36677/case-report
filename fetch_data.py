@@ -1,5 +1,5 @@
 import json, os, re, copy
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from math import log, sqrt, exp
 
 DATA_FILE = "data.json"
@@ -80,6 +80,13 @@ def date_diff_years(date_str, expiry="2026-10-12"):
     d2 = datetime.strptime(expiry, "%Y-%m-%d")
     return (d2 - d1).days / 365
 
+def last_weekday(today_obj=None):
+    """回傳今天或最近一個工作日（週一~週五）"""
+    d = today_obj or date.today()
+    while d.weekday() >= 5:
+        d -= timedelta(days=1)
+    return d
+
 # ── 資料讀寫 ──
 def load_data():
     if not os.path.exists(DATA_FILE):
@@ -130,11 +137,17 @@ def fetch_twse_api(stock_no, name):
     import urllib.request
     from datetime import date as d_
     date_param = d_.today().strftime("%Y%m%d")
-    url = (f"https://www.twse.com.tw/exchangeReport/STOCK_DAY"
+    # 改用新版路徑，避免 307 redirect
+    url = (f"https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY"
            f"?response=json&date={date_param}&stockNo={stock_no}")
     try:
-        req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=15) as r:
+        # 支援 307/308 redirect 的 opener
+        opener = urllib.request.build_opener(urllib.request.HTTPRedirectHandler())
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Accept": "application/json"
+        })
+        with opener.open(req, timeout=15) as r:
             raw = json.loads(r.read().decode("utf-8"))
         if raw.get("stat") != "OK" or not raw.get("data"):
             print(f"  ⚠ TWSE API 無資料：{name}"); return None, None
@@ -189,8 +202,20 @@ def auto_calc_biv(data):
         print("  → 所有日期 BIV 已是最新")
 
 def main():
-    today = date.today().strftime("%Y-%m-%d")
-    print(f"=== 股價更新 {today} ===\n")
+    today_obj = date.today()
+    today = today_obj.strftime("%Y-%m-%d")
+    weekday = today_obj.weekday()
+    wd_name = '一二三四五六日'[weekday]
+
+    # 補值上限日：最近一個工作日（週末執行時自動退到上週五）
+    cutoff_obj = last_weekday(today_obj)
+    cutoff = cutoff_obj.strftime("%Y-%m-%d")
+
+    print(f"=== 股價更新 {today}（週{wd_name}）===")
+    if weekday >= 5:
+        print(f"ℹ 週末執行，補值上限：{cutoff}（最近工作日）")
+    print()
+
     data = load_data()
     for t in ["00715L","2236","059427"]:
         data["prices"].setdefault(t, {})
@@ -215,17 +240,16 @@ def main():
     filled_list = data["_filled"]["059427"]
     p, d = fetch_twse_api("059427", "059427")
 
+    # === API 成功時的處理 ===
     if p and d:
         existing_price = data["prices"]["059427"].get(d)
         is_filled = d in filled_list
 
         if existing_price is None:
-            # 全新日期：直接寫入（真實成交）
             data["prices"]["059427"][d] = p
             print(f"  → 新增 {d}：{p:.2f} 元（真實成交）")
             updated = True
         elif is_filled:
-            # 之前是補的參考價，現在 API 有真實成交 → 覆蓋
             if existing_price != p:
                 data["prices"]["059427"][d] = p
                 filled_list.remove(d)
@@ -236,26 +260,45 @@ def main():
                 print(f"  → {d} 確認為真實成交（值不變，移除 filled 標記）")
                 updated = True
         else:
-            # 已存在且為真實成交 → 絕不覆蓋
             print(f"  → {d} 已存在（真實成交），跳過")
+    else:
+        print(f"  ⚠ API 無資料，啟用 fallback：用 data.json 最後一筆真實價補齊")
 
-        # Fallback：補齊 d 之後、00715L 有但 059427 沒有的日期
+    # === Fallback：無論 API 成功或失敗都跑 ===
+    wt_dates = sorted(data["prices"]["059427"].keys())
+    last_real_date = None
+    last_real_price = None
+    for wd in reversed(wt_dates):
+        if wd not in filled_list:
+            last_real_date = wd
+            last_real_price = data["prices"]["059427"][wd]
+            break
+
+    if last_real_price is None:
+        print(f"  ⚠ data.json 無任何真實成交價，無法 fallback")
+    else:
         latest_715_dates = sorted(data["prices"].get("00715L", {}).keys())
         for fill_date in latest_715_dates:
-            if fill_date > d and fill_date not in data["prices"]["059427"]:
-                data["prices"]["059427"][fill_date] = p
-                if fill_date not in filled_list:
-                    filled_list.append(fill_date)
-                print(f"  ⚠ 補入 {fill_date}：{p:.2f} 元（沿用 {d} 收盤，零成交）")
-                updated = True
-    else:
-        print(f"  ✗ API 無資料，跳過")
+            # 安全鎖 1：不補超過最近工作日（過濾週末）
+            if fill_date > cutoff:
+                continue
+            # 安全鎖 2：不補早於或等於最後真實價的日期
+            if fill_date <= last_real_date:
+                continue
+            # 安全鎖 3：已存在的不補
+            if fill_date in data["prices"]["059427"]:
+                continue
+
+            data["prices"]["059427"][fill_date] = last_real_price
+            if fill_date not in filled_list:
+                filled_list.append(fill_date)
+            print(f"  ⚠ 補入 {fill_date}：{last_real_price:.2f} 元（沿用 {last_real_date} 收盤）")
+            updated = True
     print()
 
     # 自動算 BIV（從 059427 市場價反推）
     print("[BIV 自動計算]")
     auto_calc_biv(data)
-    updated = True
     print()
 
     data["last_updated"] = today
