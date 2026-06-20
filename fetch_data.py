@@ -31,6 +31,9 @@ SEED = {
     "volatility": {
         "2026-06-08": 275.70, "2026-06-09": 277.15,
         "2026-06-16": 94.15
+    },
+    "_filled": {
+        "059427": []
     }
 }
 
@@ -59,7 +62,7 @@ def calc_biv(S, K, T, r, n, market_price, tol=1e-6):
     if market_price <= intrinsic:
         return None
 
-    low, high = 0.001, 30.0  # 0.1% ~ 3000%
+    low, high = 0.001, 30.0
     for _ in range(200):
         mid = (low + high) / 2
         p = bs_price(S, K, T, r, mid, n)
@@ -136,7 +139,6 @@ def fetch_twse_api(stock_no, name):
         if raw.get("stat") != "OK" or not raw.get("data"):
             print(f"  ⚠ TWSE API 無資料：{name}"); return None, None
 
-        # 從最後往前找第一筆有效收盤價（非 '--'）
         for last in reversed(raw["data"]):
             close_str = last[6].strip().replace(",", "")
             if close_str == "--" or not close_str:
@@ -193,6 +195,7 @@ def main():
     for t in ["00715L","2236","059427"]:
         data["prices"].setdefault(t, {})
     data.setdefault("volatility", {})
+    data.setdefault("_filled", {}).setdefault("059427", [])
     updated = False
 
     # 抓股票
@@ -209,13 +212,44 @@ def main():
 
     # 059427 用 TWSE API（twstock 不支援權證價格）
     print("[059427]")
+    filled_list = data["_filled"]["059427"]
     p, d = fetch_twse_api("059427", "059427")
+
     if p and d:
-        if d not in data["prices"]["059427"]:
+        existing_price = data["prices"]["059427"].get(d)
+        is_filled = d in filled_list
+
+        if existing_price is None:
+            # 全新日期：直接寫入（真實成交）
             data["prices"]["059427"][d] = p
-            print(f"  → 新增 {d}"); updated = True
+            print(f"  → 新增 {d}：{p:.2f} 元（真實成交）")
+            updated = True
+        elif is_filled:
+            # 之前是補的參考價，現在 API 有真實成交 → 覆蓋
+            if existing_price != p:
+                data["prices"]["059427"][d] = p
+                filled_list.remove(d)
+                print(f"  ✓ 回填覆蓋 {d}：{existing_price:.2f} → {p:.2f}（真實成交取代參考價）")
+                updated = True
+            else:
+                filled_list.remove(d)
+                print(f"  → {d} 確認為真實成交（值不變，移除 filled 標記）")
+                updated = True
         else:
-            print(f"  → {d} 已存在，跳過")
+            # 已存在且為真實成交 → 絕不覆蓋
+            print(f"  → {d} 已存在（真實成交），跳過")
+
+        # Fallback：補齊 d 之後、00715L 有但 059427 沒有的日期
+        latest_715_dates = sorted(data["prices"].get("00715L", {}).keys())
+        for fill_date in latest_715_dates:
+            if fill_date > d and fill_date not in data["prices"]["059427"]:
+                data["prices"]["059427"][fill_date] = p
+                if fill_date not in filled_list:
+                    filled_list.append(fill_date)
+                print(f"  ⚠ 補入 {fill_date}：{p:.2f} 元（沿用 {d} 收盤，零成交）")
+                updated = True
+    else:
+        print(f"  ✗ API 無資料，跳過")
     print()
 
     # 自動算 BIV（從 059427 市場價反推）
