@@ -1,5 +1,8 @@
 {
-  "last_updated": "2026-06-19",
+  "_filled": {
+    "059427": []
+  },
+  "last_updated": "2026-06-20",
   "note": "Auto-updated daily via GitHub Actions.",
   "prices": {
     "00715L": {
