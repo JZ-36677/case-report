@@ -133,22 +133,50 @@ def fetch_twstock(stock_no, name):
         print(f"  ✗ 失敗 {name}：{e}"); return None, None
 
 def fetch_twse_api(stock_no, name):
-    """直接用 TWSE 歷史資料 API（適合權證）"""
-    import urllib.request
+    """直接用 TWSE 歷史資料 API（適合權證），手動處理 307 redirect"""
+    import urllib.request, urllib.error
     from datetime import date as d_
     date_param = d_.today().strftime("%Y%m%d")
-    # 改用新版路徑，避免 307 redirect
-    url = (f"https://www.twse.com.tw/rwd/zh/afterTrading/STOCK_DAY"
+    url = (f"https://www.twse.com.tw/exchangeReport/STOCK_DAY"
            f"?response=json&date={date_param}&stockNo={stock_no}")
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.8",
+        "Referer": "https://www.twse.com.tw/zh/trading/historical/stock-day.html"
+    }
+
     try:
-        # 支援 307/308 redirect 的 opener
-        opener = urllib.request.build_opener(urllib.request.HTTPRedirectHandler())
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "Accept": "application/json"
-        })
-        with opener.open(req, timeout=15) as r:
-            raw = json.loads(r.read().decode("utf-8"))
+        # 手動跟隨 redirect（最多 5 次）
+        current_url = url
+        raw = None
+        for hop in range(5):
+            req = urllib.request.Request(current_url, headers=headers)
+            try:
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    raw = json.loads(r.read().decode("utf-8"))
+                    break
+            except urllib.error.HTTPError as e:
+                if e.code in (301, 302, 307, 308):
+                    new_url = e.headers.get("Location")
+                    if not new_url:
+                        print(f"  ✗ Redirect 無 Location header"); return None, None
+                    if new_url.startswith("/"):
+                        new_url = "https://www.twse.com.tw" + new_url
+                    elif not new_url.startswith("http"):
+                        new_url = "https://www.twse.com.tw/" + new_url
+                    print(f"  ↪ Redirect {e.code} → {new_url}")
+                    current_url = new_url
+                    continue
+                else:
+                    raise
+        else:
+            print(f"  ✗ Redirect 次數過多（>5）"); return None, None
+
+        if raw is None:
+            print(f"  ✗ 無回應內容"); return None, None
         if raw.get("stat") != "OK" or not raw.get("data"):
             print(f"  ⚠ TWSE API 無資料：{name}"); return None, None
 
