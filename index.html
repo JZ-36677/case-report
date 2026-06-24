@@ -1195,18 +1195,18 @@ function buildSparkline(){
   const dates=Object.keys(prices).sort();
   if(dates.length<1) return;
 
-  // 固定用評價基準日 BIV 275.7% 計算理論價（確保與案例一致）
-  const baseBIV=stockData?.volatility?.['2026-06-08']||275.7;
-  const sig=baseBIV/100;
-  const K=66,r=0.0175,n=0.07;
+  // 用「選定基準日」的 BIV 計算所有日期的理論價（與卡片數字一致）
+  const selectedDate = document.getElementById('p2-date')?.value || '2026-06-08';
+  const baseBIV = getVol(selectedDate);  // 取選定基準日的 BIV，找不到自動 fallback
+  const sig = baseBIV / 100;
+  const K = 66, r = 0.0175, n = 0.07;
 
-  // 計算各日 B-S 理論價
-  const tpVals=dates.map(d=>{
-    const T=dateDiff(d,EXPIRY)/365;
-    if(T<=0) return null;
-    return bsCalc(prices[d],K,T,r,sig,n).tp;
+  // 計算各日 B-S 理論價（σ 固定為基準日 BIV）
+  const tpVals = dates.map(d => {
+    const T = dateDiff(d, EXPIRY) / 365;
+    if (T <= 0) return null;
+    return bsCalc(prices[d], K, T, r, sig, n).tp;
   });
-
   // 059427 市場價
   const wVals=dates.map(d=>wPrices[d]||null);
 
