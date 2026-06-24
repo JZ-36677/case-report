@@ -1207,6 +1207,7 @@ function buildSparkline(){
     if (T <= 0) return null;
     return bsCalc(prices[d], K, T, r, sig, n).tp;
   });
+
   // 059427 市場價
   const wVals=dates.map(d=>wPrices[d]||null);
 
